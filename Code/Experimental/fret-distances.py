@@ -1,3 +1,4 @@
+
 # Get Fret Distances of a Guitar Hero Console
 
 distance = 0.43                                 # Total Lenth is 43cm
@@ -11,3 +12,6 @@ for fret_index in range(fret_num):
     fret_distances.append(formated)             # Store Distance
     
 print(fret_distances)
+
+
+
