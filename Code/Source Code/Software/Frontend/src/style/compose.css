@@ -1,0 +1,156 @@
+@font-face {
+    font-family: "GlueGun";
+    src: url("../../Fonts/GlueGun.otf");
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+    scrollbar-color: springgreen black;
+    scrollbar-width: thin;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+}
+
+body {
+    min-width: 100vw;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #111;
+    overflow: hidden;
+}
+
+h1 {
+    padding: 20px;
+    padding-bottom: 0;
+    color: #ddd;
+    font-size: 32px;
+    font-weight: lighter;
+    text-align: center;
+}
+
+h2 {
+    min-width: 100vw;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #222;
+}
+
+h2 i {
+    font-size: 30px;
+}
+
+h2 {
+    color: #999;
+    font-weight: lighter;
+    font-size: 20px;
+}
+
+button {
+    background-color: transparent;
+    border: 1px solid #333;
+    width: 50px;
+    height: 40px;
+    color: #aaa;
+}
+
+#tab-sheet {
+    width: 100%;
+    max-width: 100vw;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 0 20px;
+    background-color: #050505;
+}
+
+.staff {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+
+.bar {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.bar-number {
+    position: absolute;
+    color: #555;
+}
+
+.bar.active {
+    background-color: red;
+}
+
+.string {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.bar > * {
+    border-left: 2px solid #555;
+}
+
+
+.bar:last-child .string {
+    border-right: 2px solid #555;
+}
+
+.bar-super {
+    border: none;
+    color: white;
+    font-weight: bold;
+}
+
+.bar-chord-txt {
+    position: absolute;
+    width: 50px;
+}
+
+.beat {
+    display: flex;
+    justify-content: center;
+    color: #555;
+    font-weight: bold;
+}
+
+.beat.hasnote {
+    color: white;
+    font-family: monospace;
+    z-index: 100;
+}
+
+.play-wrapper {
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+#play, #pause {
+    width: 70px;
+    height: 70px;
+    color: springgreen;
+    border-radius: 100%;
+}
+
+#play > i, #pause > i {
+    font-size: 30px;
+}
+
+button:disabled {
+    display: none;
+}
