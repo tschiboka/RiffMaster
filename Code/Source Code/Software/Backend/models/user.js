@@ -1,4 +1,5 @@
 const Joi = require("joi");                                        // Use Joi for Validation
+Joi.objectId = require('joi-objectid')(Joi);                       // Use for Validating MongoDB ObjectIDs
 const mongoose = require("mongoose");                              // Database Handling
 const schema = new mongoose.Schema({
     email: {                                                       // EMAIL: STRING REQUIRED, UNIQUE, MAX: 255
@@ -37,7 +38,7 @@ const User = mongoose.model("User", schema);
 function validate(user) {
     const schema = {
         email: Joi.string().required().email({ tlds: { allow: false } }),
-        userName: Joi.string().required().min(5).max(20).required(),
+        userName: Joi.string().required().min(5).max(20),
         password: Joi.string().required().max(255),
         date: Joi.date(),
         updated: Joi.date(),

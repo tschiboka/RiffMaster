@@ -29,8 +29,11 @@ if (NODE_ENV === "development") app.use(morgan("tiny"));
 // Routers
 const index = require("./routes/index");
 const users = require("./routes/user");
-app.use("/", index);
-app.use("/api/users", users);
+const profile = require("./routes/profile");
+app.use("/", index);                                               // Index API Route
+app.use("/api/users", users);                                      // Users API Route
+app.use("/api/profiles", profile);                                 // Profile API Route
+
 
 
 // Listen Port
