@@ -8,7 +8,7 @@ const { Tab, validate } = require("../models/tab");                // Get Tab Mo
 
 router.get("/", async (req, res) => {                               // GET: ALL
     const tabs = await Tab.find();
-    res.json({ success: true, tabs });
+    res.status(200).json({ success: true, tabs });                 // Return 200 Success
 });
 
 
@@ -27,7 +27,7 @@ router.get("/:id", async (req, res) => {                           // GET: ID
     const noTabJson = { success: false, message: noTabMsg };       // No Tab JSON
     if (!tab) return res.status(404).json(noTabJson);              // Return 404 Resource Not Found
 
-    return res.json({ success: true, tab });                       // Retrun Tab JSON
+    return res.status(200).json({ success: true, tab });           // Return 200 Success
 });
 
 
@@ -63,7 +63,7 @@ router.post("/", async (req, res) => {                             // POST
 
     const tab = await new Tab(req.body).save();                    // Create Tab
 
-    return res.json({ success: true, tab });                       // Return Tab JSON
+    return res.status(201).json({ success: true, tab });           // Return Tab JSON
 });
 
 
@@ -120,7 +120,7 @@ router.put("/:id", async (req, res) => {                           // PUT: ID
 
     // Save and Return Tab
     await tab.save();
-    return res.json({ success: true, tab });
+    return res.status(201).json({ success: true, tab });           // Return 201 Created and Success
 });
 
 
@@ -140,7 +140,7 @@ router.delete("/:id", async (req, res) => {
     if (!tab) return res.status(404).json(noTabJson);              // Return 404 Resource Not Found
 
     const result = await tab.deleteOne({ _id: id });               // Delete Tab Iten
-    return res.json({ success: true, result });
+    return res.status(204).json({ success: true, result });        // Return 204 No Content
 });
 
 

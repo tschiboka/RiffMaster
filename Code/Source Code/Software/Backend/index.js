@@ -31,10 +31,13 @@ const index = require("./routes/index");
 const users = require("./routes/user");
 const profile = require("./routes/profile");
 const tab = require("./routes/tab");
+const achievements = require("./routes/achievement");
+
 app.use("/", index);                                               // Index API Route
 app.use("/api/users", users);                                      // Users API Route
 app.use("/api/profiles", profile);                                 // Profile API Route
 app.use("/api/tabs", tab);                                         // Tab API Route
+app.use("/api/achievements", achievements);                        // Achievements API Route
 
 
 

@@ -27,7 +27,7 @@ router.get("/:id", async(req, res) => {                            // GET: ID (G
     if (!profile.length) return res.status(403).json(profJson);    // Return 404 Resource Not Found
 
     // Find User Profile
-    res.json({ success: true, user });
+    res.status(200).json({ success: true, user });                 // Return 200 Success
 });
 
 
@@ -62,7 +62,7 @@ router.post("/", async (req, res) => {                              // POST
     // Create User Profile
     const profile = new Profile(req.body);                         // New Profile Object
     await profile.save();                                          // Save
-    res.json({ success: true, profile });                          // Return Profile JSON
+    res.status(201).json({ success: true, profile });              // Return 201 Created and Success
 });
 
 
