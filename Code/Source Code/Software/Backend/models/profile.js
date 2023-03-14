@@ -4,7 +4,7 @@ const GENDER = ["male", "female", "X"];                            // Gender Enu
 const ACCOUNT_TYPES = ["trial", "free", "standard", "premium"];    // Accoutn Types Enum
 const schema = new mongoose.Schema({
     userID: {                                                      // USERID: Foreign Key
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
         required: true,
         trim: true,
     },
@@ -70,7 +70,6 @@ const schema = new mongoose.Schema({
     },
     phone: {                                                       // PHONE: STRING REQUIRED, MIN: 8, MAX: 20
         type: String,   
-        required: true,
         maxlength: 20,
         minlength: 8,
         trim: true,
@@ -110,7 +109,7 @@ function validate(profile) {
         city: Joi.string().required().min(2).max(50),
         addressLine1: Joi.string().required().min(5).max(100),
         addressLine2: Joi.string().min(5).max(100),
-        phone: Joi.string().required().min(8).max(20),
+        phone: Joi.string().min(8).max(20),
         about: Joi.string().max(10000),
         avatar: Joi.string().max(255),
         accountType: Joi.string()

@@ -30,9 +30,12 @@ if (NODE_ENV === "development") app.use(morgan("tiny"));
 const index = require("./routes/index");
 const users = require("./routes/user");
 const profile = require("./routes/profile");
+const tab = require("./routes/tab");
 app.use("/", index);                                               // Index API Route
 app.use("/api/users", users);                                      // Users API Route
 app.use("/api/profiles", profile);                                 // Profile API Route
+app.use("/api/tabs", tab);                                         // Tab API Route
+
 
 
 

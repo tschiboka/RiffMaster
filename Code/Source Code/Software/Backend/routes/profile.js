@@ -34,6 +34,7 @@ router.get("/:id", async(req, res) => {                            // GET: ID (G
 
 router.post("/", async (req, res) => {                              // POST
     // Validate User Body
+    if (!req.body) return res.status(400).json( { success: false, message: `There is no request body!` } );
     const { error } = validate(req.body);                          // Validate User Body
     const message400 = error?.details[0].message;                  // Invalid Body Message
     const json400 = { success: false, message: message400 };       // Invalid Body Object

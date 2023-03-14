@@ -5,14 +5,14 @@ const { User, validate } = require("../models/user");              // Get User M
 
 
 
-router.get("/", async(req, res) => {                               // GET: ALL
+router.get("/", async (req, res) => {                              // GET: ALL
     const users = await User.find();
     res.json({ success: true, users });
 });
 
 
 
-router.get("/:id", async(req, res) => {                            // GET: ID
+router.get("/:id", async (req, res) => {                           // GET: ID
     // Validate ID
     const id = req.params.id;                                      // Id Parameter
     const isValidID = mongoose.Types.ObjectId.isValid(id);         // Validate ID Casting
@@ -31,8 +31,9 @@ router.get("/:id", async(req, res) => {                            // GET: ID
 
 
 
-router.post("/", async(req, res) => {                              // POST
+router.post("/", async (req, res) => {                             // POST
     // Validate User Body
+    if (!req.body) return res.status(400).json( { success: false, message: `There is no request body!` } );
     const { error } = validate(req.body);                          // Validate User Body
     const message400 = error?.details[0].message;                  // Invalid Body Message
     const json400 = { success: false, message: message400 };       // Invalid Body Object
@@ -61,7 +62,7 @@ router.post("/", async(req, res) => {                              // POST
 
 
 // Put Request Only Updates (Email, User Name, Admin, Active)
-router.put("/:id", async(req, res) => {                            // PUT
+router.put("/:id", async (req, res) => {                           // PUT
     // Validate ID
     const id = req.params.id;                                      // Get Id
     const isValidID = mongoose.Types.ObjectId.isValid(id);         // Validate ID Casting
@@ -75,8 +76,12 @@ router.put("/:id", async(req, res) => {                            // PUT
     const json404 = { success: false, error: message404 };         // Error JSON to Send Back
     if (!user) return res.status(404).json(json404);               // Resource Not Found
 
-    // Update User
+    // Validate User Body
     if (!req.body) return res.status(400).json( { success: false, message: `There is no request body!` } );
+    const { error } = validate(req.body);                          // Validate User Body
+    const message400 = error?.details[0].message;                  // Invalid Body Message
+    const json400 = { success: false, message: message400 };       // Invalid Body Object
+    if (error) return res.status(400).send(json400);               // Return 400 Invalid Body   
 
     // Find If Email Already Exists
     const email = req.body.email;                                  // Email
