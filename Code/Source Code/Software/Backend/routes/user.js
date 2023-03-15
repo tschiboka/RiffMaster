@@ -2,17 +2,20 @@ const express = require("express");                                // RESTful Mi
 const mongoose = require("mongoose");                              // Database Handling
 const router = express.Router();                                   // Router Middleware
 const { User, validate } = require("../models/user");              // Get User Model
+const bcrypt = require("bcrypt");                                  // Hashing Passwords
+const jwt = require("jsonwebtoken");                               // JSON Web Token for Authentication
+const auth = require("../middleware/auth");                        // Get JWT Authentication Middleware
 
 
 
-router.get("/", async (req, res) => {                              // GET: ALL
+router.get("/", auth, async (req, res) => {                        // GET: ALL
     const users = await User.find().select("-password");           // Take Off Pasword
     res.status(200).json({ success: true, users });                // Return 200 Successres.status(200).json({ success: true, users });                // Return 200 Success
 });
 
 
 
-router.get("/:id", async (req, res) => {                           // GET: ID
+router.get("/:id", auth, async (req, res) => {                           // GET: ID
     // Validate ID
     const id = req.params.id;                                      // Id Parameter
     const isValidID = mongoose.Types.ObjectId.isValid(id);         // Validate ID Casting
@@ -54,10 +57,17 @@ router.post("/", async (req, res) => {                             // POST
     const nameJson = { success: false, message: nameMessage };     // User Name Exists Object
     if (nameExist) return res.status(403).json(nameJson);          // Return 403 Resource Already Exists 
 
+    // Hash Password
+    const salt = await bcrypt.genSalt(10);                         // Generate Salt
+    const hashed = await bcrypt.hash(req.body.password, salt);     // Encrypt with Salt
+    
     const user = new User(req.body);                               // Create User
+    user.password = hashed;                                        // Store Encrypted Password
     await user.save();
 
-    res.json({ success: true, user });
+    const updated = { ...user }._doc;                              // Dereference User (Cannot Delete Password on Prototype)
+    delete updated.password;                                       // Delete Password Property                                   
+    res.status(201).json({ success: true, user: updated });        // Return 201 Created and Success
 });
 
 
@@ -74,7 +84,7 @@ router.put("/:id", async (req, res) => {                           // PUT
     // Find and Validate User
     let user = await User.findById(id);                            // Get User
     const message404 = `User with ID ${ id } Not Found!`;          // Create 404 Error Message
-    const json404 = { success: false, error: message404 };         // Error JSON to Send Back
+    const json404 = { success: false, message: message404 };       // Error JSON to Send Back
     if (!user) return res.status(404).json(json404);               // Return 404 Resource Not Found
 
     // Validate User Body

@@ -1,4 +1,5 @@
 {
     "name": "Riff Master - Development",
-    "db": "mongodb://localhost/riffmaster"
+    "db": "mongodb://localhost/riffmaster",
+    "jwtPrivateKey": ""
 }

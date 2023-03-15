@@ -1,3 +1,4 @@
 {
-    "password": "RIFFMASTER_PASSWORD"
+    "password": "RIFFMASTER_PASSWORD",
+    "jwtPrivateKey": "JWT_PRIVATE_KEY"
 }

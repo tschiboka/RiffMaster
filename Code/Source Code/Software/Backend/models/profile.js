@@ -99,7 +99,6 @@ const Profile = mongoose.model("Profile", schema);
 
 function validate(profile) {
     const schema = {
-        userID: Joi.objectId().required(),
         firstName: Joi.string().required().min(1).max(50),
         lastName: Joi.string().required().min(1).max(50),
         dateOfBirth: Joi.date(),

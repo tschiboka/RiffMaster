@@ -1,3 +1,4 @@
 {
-    "name": "Riff Master"
+    "name": "Riff Master",
+    "jwtPrivateKey": ""
 }

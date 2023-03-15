@@ -1,3 +1,5 @@
+const jwt = require("jsonwebtoken");                               // JSON Web Token for Authentication
+const config = require("config");                                  // Get Environmental Variables
 const Joi = require("joi");                                        // Use Joi for Validation
 Joi.objectId = require('joi-objectid')(Joi);                       // Use for Validating MongoDB ObjectIDs
 const mongoose = require("mongoose");                              // Database Handling
@@ -31,8 +33,17 @@ const schema = new mongoose.Schema({
     admin: { type: Boolean, default: false },                      // ADMIN: BOOL DEFAULT FALSE
     profile: mongoose.Schema.Types.ObjectId,                       // PROFILE: OBJECT_ID
 });
-const User = mongoose.model("User", schema);
 
+
+
+function generateAuthenticationToken() {
+    const payload = { _id: this._id, admin: this.admin };          // User Payload
+    const jwtPrivateKey = config.get("jwtPrivateKey");             // Get JWT Private Key
+    const token = jwt.sign(payload, jwtPrivateKey);                // Create JWT Token
+    return token;
+}
+schema.methods.generateAuthenticationToken = generateAuthenticationToken; // Add Token Generation to Schema
+const User = mongoose.model("User", schema);                       // Create Model
 
 
 

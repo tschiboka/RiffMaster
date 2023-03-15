@@ -23,18 +23,25 @@ app.use(admin);
 const PORT = process.env.PORT || 5000;                             // PORT
 const NODE_ENV = app.get("env");                                   // ENVIRONMENT (default "development")
 if (NODE_ENV === "development") app.use(morgan("tiny"));
+const jwtPrivateKey = config.get("jwtPrivateKey");             // Get JWT Private Key
+if (!jwtPrivateKey) {
+    console.log("FATAL ERROR: JWT Private Key is Not Defined!");
+    process.exit(1);
+}
 
 
 
 // Routers
 const index = require("./routes/index");
 const users = require("./routes/user");
+const login = require("./routes/login");
 const profile = require("./routes/profile");
 const tab = require("./routes/tab");
 const achievements = require("./routes/achievement");
 
 app.use("/", index);                                               // Index API Route
 app.use("/api/users", users);                                      // Users API Route
+app.use("/api/login", login);                                       // Login API Route
 app.use("/api/profiles", profile);                                 // Profile API Route
 app.use("/api/tabs", tab);                                         // Tab API Route
 app.use("/api/achievements", achievements);                        // Achievements API Route

@@ -4,10 +4,12 @@ const { Achievement } = require("../models/achievement");
 const router = express.Router();                                   // Router Middleware
 const { Profile, validate } = require("../models/profile");        // Get User Model and Validation
 const { User } = require("../models/user")                         // Get Profile Model
+const auth = require("../middleware/auth");                        // Get JWT Authentication Middleware
+const admin = require("../middleware/admin");                      // Admin Middleware
 
 
 
-router.get("/:id", async(req, res) => {                            // GET: ID (Get Profile with User ID)
+router.get("/:id", auth, async(req, res) => {                      // GET: ID (Get Profile with User ID)
     // Validate ID
     const id = req.params.id;                                      // ID Parameter
     const isValidID = mongoose.Types.ObjectId.isValid(id);         // Validate ID Casting
@@ -33,7 +35,7 @@ router.get("/:id", async(req, res) => {                            // GET: ID (G
 
 
 
-router.post("/", async (req, res) => {                              // POST
+router.post("/", auth, async (req, res) => {                       // POST
     // Validate User Body
     if (!req.body) return res.status(400).json( { success: false, message: `There is no request body!` } );
     const { error } = validate(req.body);                          // Validate User Body
@@ -42,7 +44,7 @@ router.post("/", async (req, res) => {                              // POST
     if (error) return res.status(400).send(json400);               // Return 400 Invalid Body   
 
     // Try Cast User ID
-    const userID = req.body.userID;                                // Get ID Parameter
+    const userID = req.user._id;                                   // Get ID Parameter
     const isValidID = mongoose.Types.ObjectId.isValid(userID)      // Validate ID Casting
     const messageID = `Couldn't Cast ${ userID } to DB _id`;       // ID Cast Error Message
     const jsonCastErr = { success: false, error: messageID };      // JSON Cast Error Object
@@ -68,7 +70,7 @@ router.post("/", async (req, res) => {                              // POST
 
 
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", auth, async (req, res) => {                     // PUT: ID
     // Validate User Body
     if (!req.body) return res.status(400).json( { success: false, message: `There is no request body!` } );
     const { error } = validate(req.body);                          // Validate User Body
@@ -77,17 +79,22 @@ router.put("/:id", async (req, res) => {
     if (error) return res.status(400).send(json400);               // Return 400 Invalid Body   
 
     // Try Cast User ID
-    const userID = req.body.userID;                                // Get ID Parameter
+    const userID = req.user._id;                                   // Get ID Parameter
     const isValidID = mongoose.Types.ObjectId.isValid(userID)      // Validate ID Casting
     const messageID = `Couldn't Cast ${ userID } to DB _id`;       // ID Cast Error Message
     const jsonCastErr = { success: false, error: messageID };      // JSON Cast Error Object
     if (!isValidID) return res.status(400).json(jsonCastErr);      // Return 400 ID Cast Error
-
+    
     // Find If User Does Not Exists with UserID
-    const userExist = await User.findById(userID);                 // Existing User Object
+    const user = await User.findById(userID);                      // Existing User Object
     const noUserMsg =`Couldn't Find User with ID: ${ userID }`;    // No User with userID Message
     const noUserJson = { success: false, message: noUserMsg };     // No User with userID JSON
-    if (!userExist) return res.status(404).json(noUserJson);       // Return 404 Resource Not Found
+    if (!user) return res.status(404).json(noUserJson);            // Return 404 Resource Not Found
+    
+    // Authenticate User
+    const jwtUserID = req.user._id;
+    if (jwtUserID !== userID) return res.status(401)  // User Has No Permission to Modify Profile
+        .json({ success: false, message: `Access Denied: JWT UserID Does Not Match Request User ID` })
     
     // Find If Profile Exists with ID
     const id = req.params.id;                                      // Get Profile ID
@@ -142,6 +149,12 @@ router.put("/:id", async (req, res) => {
 
     const updated = await Profile.findById(id).populate("achievements");   // Populate the Updated Profile with Achievements
     return res.status(201).json({ success:true, profile: updated });// Return 201 and User: Successfully Modified
+});
+
+
+
+router.delete("/:id", [auth, admin], (req, res) => {               // DELETE Profile with UserID
+
 });
 
 module.exports = router;

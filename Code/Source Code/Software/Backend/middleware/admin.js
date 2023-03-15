@@ -1,5 +1,8 @@
 function admin(req, res, next) {
-    console.log("Admin...");
+    if (!req.user.admin) res.status(403).json({
+        success: false,
+        message: "Access Denied: User has no Admin Privileges!"
+    });
     next();
 };
 
