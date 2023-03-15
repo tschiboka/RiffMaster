@@ -29,6 +29,7 @@ const schema = new mongoose.Schema({
     lastLogin: Date,                                               // LASTLOGIN: DATE
     active: { type: Boolean, default: false },                     // ACTIVE: BOOL DEFAULT FALSE
     admin: { type: Boolean, default: false },                      // ADMIN: BOOL DEFAULT FALSE
+    profile: mongoose.Schema.Types.ObjectId,                       // PROFILE: OBJECT_ID
 });
 const User = mongoose.model("User", schema);
 
@@ -45,6 +46,7 @@ function validate(user) {
         lastLogin: Joi.date(),
         active: Joi.boolean(),
         admin: Joi.boolean(),
+        profile: Joi.objectId()
     }
 
     return Joi.validate(user, schema);

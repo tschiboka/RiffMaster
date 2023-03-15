@@ -3,6 +3,7 @@ const mongoose = require("mongoose");                              // Database H
 const schema = new mongoose.Schema({                               // Tab Schema
     userID: {                                                      // USERID: FOREIGN KEY
         type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
         required: true,
     },
     title: {                                                       // TITLE: STRING, REQUIRED, MIN: 1, MAX: 255, UNIQUE

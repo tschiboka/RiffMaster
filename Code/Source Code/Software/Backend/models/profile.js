@@ -3,11 +3,6 @@ const mongoose = require("mongoose");                              // Database H
 const GENDER = ["male", "female", "X"];                            // Gender Enum
 const ACCOUNT_TYPES = ["trial", "free", "standard", "premium"];    // Accoutn Types Enum
 const schema = new mongoose.Schema({
-    userID: {                                                      // USERID: Foreign Key
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        trim: true,
-    },
     firstName: {                                                   // FIRSTNAME: STRING REQUIRED, MIN: 1, MAX: 50
         type: String,   
         required: true,
@@ -85,6 +80,11 @@ const schema = new mongoose.Schema({
         maxlength: 255,
         trim: true,
     },
+    achievements: {                                                // ACHIEVEMENTS: ARRAY OF OBJECTIDS
+        type: [ mongoose.Schema.Types.ObjectId ],
+        ref: "Achievement",
+        default: []
+    },
     accountType: {                                                 // ACCOUNTTYPE: ENUM REQIURED, LOWERCASE
         type: String,
         enum: ACCOUNT_TYPES,
@@ -112,6 +112,7 @@ function validate(profile) {
         phone: Joi.string().min(8).max(20),
         about: Joi.string().max(10000),
         avatar: Joi.string().max(255),
+        achievements: Joi.array().items(Joi.objectId()),
         accountType: Joi.string()
     }
     return Joi.validate(profile, schema);
