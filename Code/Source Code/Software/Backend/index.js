@@ -1,3 +1,5 @@
+require("express-async-errors");                                   // Automatic Try Catch for Internal Errors
+const error = require("./middleware/error");                       // Error Middleware
 const Joi = require("joi");                                        // Use Joi for Validation
 const express = require("express");                                // RESTful Middleware
 const helmet = require("helmet");                                  // HTTP Headers
@@ -23,7 +25,7 @@ app.use(admin);
 const PORT = process.env.PORT || 5000;                             // PORT
 const NODE_ENV = app.get("env");                                   // ENVIRONMENT (default "development")
 if (NODE_ENV === "development") app.use(morgan("tiny"));
-const jwtPrivateKey = config.get("jwtPrivateKey");             // Get JWT Private Key
+const jwtPrivateKey = config.get("jwtPrivateKey");                 // Get JWT Private Key
 if (!jwtPrivateKey) {
     console.log("FATAL ERROR: JWT Private Key is Not Defined!");
     process.exit(1);
@@ -46,11 +48,12 @@ app.use("/api/profiles", profile);                                 // Profile AP
 app.use("/api/tabs", tab);                                         // Tab API Route
 app.use("/api/achievements", achievements);                        // Achievements API Route
 
-
+// Error Middleware (Must be the Last in the Pipeline)
+app.use(error);
 
 
 // Listen Port
-app.listen(PORT, () => {                                           // Display Log
+const server = app.listen(PORT, () => {                             // Display Log
     debug(`\n${ config.get("name") }`);
     debug(`PORT:        ${ PORT }`);
     debug(`ENVIRONMENT: ${ NODE_ENV }`);
@@ -61,5 +64,10 @@ app.listen(PORT, () => {                                           // Display Lo
 
 // Database Connection
 mongoose.connect(config.get("db"))
-.then(() => dbDebbuger(`     DB:          ${ config.get("db") }`))
-.catch(err => dbDebbuger(`     DB:          Could Not Connect to: ${ config.get("db") }\n${ err }`));
+    .then(() => dbDebbuger(`     DB:          ${ config.get("db") }`))
+    .catch(err => dbDebbuger(`     DB:          Could Not Connect to: ${ config.get("db") }\n${ err }`));
+
+
+
+
+module.exports.server = server;

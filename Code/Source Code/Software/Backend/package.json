@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --watchAll --verbose"
   },
   "author": "",
   "license": "ISC",
@@ -14,6 +14,7 @@
     "config": "^3.3.9",
     "debug": "^4.3.4",
     "express": "^4.18.2",
+    "express-async-errors": "^3.1.1",
     "helmet": "^6.0.1",
     "joi": "^13.1.0",
     "joi-date-extensions": "^1.2.0",
@@ -22,6 +23,12 @@
     "moment": "^2.29.4",
     "mongoose": "^7.0.1",
     "mongoose-date-format": "^1.2.0",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "winston": "^3.8.2",
+    "winston-mongodb": "^5.1.1"
+  },
+  "devDependencies": {
+    "jest": "^29.5.0",
+    "supertest": "^6.3.3"
   }
 }

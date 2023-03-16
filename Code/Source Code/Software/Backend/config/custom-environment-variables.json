@@ -1,4 +1,5 @@
 {
     "password": "RIFFMASTER_PASSWORD",
-    "jwtPrivateKey": "JWT_PRIVATE_KEY"
+    "jwtPrivateKey": "JWT_PRIVATE_KEY",
+    "db": "DB_STRING"
 }

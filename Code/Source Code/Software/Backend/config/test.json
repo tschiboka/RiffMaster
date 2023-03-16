@@ -1,0 +1,5 @@
+{
+    "name": "Riff Master - Test",
+    "db": "mongodb://localhost/riffmaster_test",
+    "jwtPrivateKey": "JWT_PRIVATE_KEY"
+}

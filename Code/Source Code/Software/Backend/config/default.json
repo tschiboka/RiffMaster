@@ -1,4 +1,5 @@
 {
     "name": "Riff Master",
-    "jwtPrivateKey": ""
+    "jwtPrivateKey": "",
+    "db": "DB_STRING"
 }

@@ -67,3 +67,4 @@ function validate(user) {
 
 exports.User = User;
 exports.validate = validate;
+exports.generateAuthenticationToken = generateAuthenticationToken;
