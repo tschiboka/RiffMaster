@@ -119,7 +119,7 @@ function validateFirstName() {
     const firstName = firstNameInput.value.trim();
     
     if (!firstName) { generateFormMessage("First Name Input Cannot be Left Empty!"); return false; }
-    if (firstName.length <= 1) { generateFormMessage("First Name Must Be at Least 8 Characters Long!"); return false; }
+    if (firstName.length <= 1) { generateFormMessage("First Name Must Be at Least 1 Characters Long!"); return false; }
     if (firstName.length > 50) { generateFormMessage("First Name Must Be Maximum 50 Characters Long!"); return false; }
     if (!/^[a-z \-']+$/i.test(firstName)) { generateFormMessage("First Name Must Not Contain Numeric or Special Characters!"); return false; }
     return true;
@@ -131,7 +131,7 @@ function validateLastName() {
     const lastName = lastNameInput.value.trim();
     
     if (!lastName) { generateFormMessage("Last Name Input Cannot be Left Empty!"); return false; }
-    if (lastName.length <= 1) { generateFormMessage("Last Name Must Be at Least 8 Characters Long!"); return false; }
+    if (lastName.length <= 1) { generateFormMessage("Last Name Must Be at Least 1 Characters Long!"); return false; }
     if (lastName.length > 50) { generateFormMessage("Last Name Must Be Maximum 50 Characters Long!"); return false; }
     if (!/^[a-z \-']+$/i.test(lastName)) { generateFormMessage("Last Name Must Not Contain Numeric or Special Characters!"); return false; }
     return true;

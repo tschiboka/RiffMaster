@@ -62,10 +62,13 @@ h2 {
     border: 1px solid #333;
     border-radius: 5px;
     box-shadow: 10px 10px 10px black;
+    z-index: 10;
 }
 
 form {
     width: 750px;
+    max-width: 750px;
+    max-height: 750px;
     padding: 30px;
     display: flex;
     flex-direction: column;
@@ -91,6 +94,57 @@ fieldset {
     border: none;
 }
 
+fieldset > div.date-inputs, fieldset > div.gender-inputs {
+    width: 70%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+fieldset > div.date-inputs > input, fieldset > div.gender-inputs > input {
+    margin-left: 20px;
+    margin-right: 20px;
+    padding: 5px;
+    text-align: center;
+    width: 60px;
+}
+
+fieldset > div.gender-inputs > input {
+    width: 30px;
+    height: 55px;
+    background: #111;
+    border: 2px solid #222;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5), -5px -5px 10px rgba(255, 255, 255, 0.03);
+    outline: none;
+    font-size: 22px;
+}
+
+
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: #333;
+    opacity: 1; /* Firefox */
+}
+  
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: #333;
+}
+  
+::-ms-input-placeholder { /* Microsoft Edge */
+    color: #333;
+}
+
+
+
+fieldset > div.date-inputs > input#year {
+    width: 100px;
+    margin-right: 0;
+}
+
+fieldset > div.gender-inputs > input#gender-x {
+    margin-right: 0;
+    background-color: red;
+}
+
 fieldset.highlight > input {
     border: 2px solid #444;
     color: white;
@@ -111,9 +165,10 @@ fieldset.highlight > label:before {
 }
 
 input {
+    position: relative;                   /* For Country Autocomplete */
     width: 70%;
-    height: 55px;
-    padding: 0 20px;
+    height: 50px;
+    padding: 0 10px;
     background: #111;
     border: 2px solid #222;
     border-radius: 10px;
@@ -227,7 +282,12 @@ div.avatar-box {
     overflow-y: scroll;
 }
 
+div.avatar-box.highlight {
+    border-color: #999;
+}
+
 img.avatar {
+    display: block;
     margin: 50% auto;
     margin-bottom: 30px;
     margin-top: 30px;;
@@ -238,8 +298,51 @@ img.avatar {
     border: 3px solid #333;
     border-radius: 10px;
     box-shadow: 10px 10px 10px black;
+    opacity: 0.7;
+    cursor: pointer;
+}
+
+img.avatar:hover {
+    opacity: 1;
 }
 
 img.avatar.selected {
+    opacity: 1;
+    border: 3px solid #999;
+}
 
+#countryautocomplete-list {
+    position: absolute;
+    max-height: 450px;
+    overflow-y: auto;
+    top: 60px;
+    left: 215px;
+    background: #090909;
+    border: 2px solid #333;
+    border-top: none;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    width: 450px;
+    z-index: 10;
+}
+
+#countryautocomplete-list div {
+    border-top: 1px solid #222;
+    padding: 10px 0;
+    margin: 10px;
+}
+
+#countryautocomplete-list div:first-child {
+    border-top: none;
+    padding-top: 0;
+}
+
+#countryautocomplete-list div strong {
+    color: #999;
+}
+
+#countryautocomplete-list div:hover {
+    background-color: black;
+    color: #999;
+    cursor: pointer;
 }

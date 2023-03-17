@@ -20,18 +20,43 @@
 
         <form>
             <fieldset id="dob-field">
-                <label for="dob">Date of Birth</label>
-                <input id="dob" type="text">
+                <label>Date of Birth</label>
+
+                <div class="date-inputs">
+                    <label for="day">Day</label>
+                    <input id="day" type="text" placeholder="DD">
+                    
+                    <label for="month">Month</label>
+                    <input id="month" type="text" placeholder="MM">
+
+                    <label for="year">Year</label>
+                    <input id="year" type="text" placeholder="YYYY">
+                </div>
             </fieldset>
     
             <fieldset  id="gender-field">
-                <label for="gender">Gender</label>
-                <input id="gender" type="text">
+                <label>Gender</label>
+
+                <div class="gender-inputs">
+                    <label for="male">Male</label>
+                    <input id="male" type="radio" name="gender" checked>
+
+                    <label for="female">Female</label>
+                    <input id="female" type="radio" name="gender">
+
+                    <label for="gender-x">X</label>
+                    <input id="gender-x" type="radio" name="gender">
+                </div>
             </fieldset>
     
             <fieldset  id="country-field">
                 <label for="country">Country</label>
                 <input id="country" type="text">
+            </fieldset>
+
+            <fieldset  id="city-field">
+                <label for="city">City</label>
+                <input id="city" type="text">
             </fieldset>
     
             <fieldset  id="postcode-field">

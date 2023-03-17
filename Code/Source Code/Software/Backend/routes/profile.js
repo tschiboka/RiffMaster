@@ -142,6 +142,7 @@ router.put("/:id", auth, async (req, res) => {                     // PUT: ID
     profile.country = req.body.country || profile.country;         // Rewrite Country
     profile.province = req.body.province || profile.province;      // Rewrite Province
     profile.city = req.body.city || profile.city;                  // Rewrite City
+    profile.postCode = req.body.postCode || profile.postCode;      // Rewrite PostCode
     profile.addressLine1 = req.body.addressLine1 || profile.addressLine1;  // Rewrite Address Line 1
     profile.addressLine2 = req.body.addressLine2 || profile.addressLine2;  // Rewrite Address Line 2
     profile.accountType = req.body.accountType || profile.accountType;     // Rewrite Account Type
