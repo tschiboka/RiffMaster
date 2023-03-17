@@ -1,6 +1,6 @@
 const express = require("express");                                // RESTful Middleware
-const mongoose = require("mongoose");                              // Database Handling
 const router = express.Router();                                   // Router Middleware
+const mongoose = require("mongoose");                              // Database Handling
 const { User, validate } = require("../models/user");              // Get User Model
 const bcrypt = require("bcrypt");                                  // Hashing Passwords
 const jwt = require("jsonwebtoken");                               // JSON Web Token for Authentication

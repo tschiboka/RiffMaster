@@ -1,5 +1,8 @@
 {
     "name": "Riff Master - Test",
     "db": "mongodb://localhost/riffmaster_test",
-    "jwtPrivateKey": "JWT_PRIVATE_KEY"
+    "jwtPrivateKey": "JWT_PRIVATE_KEY",
+    "emailAddress": "",
+    "emailServer": "",
+    "emailPassword": ""
 }

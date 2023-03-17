@@ -11,6 +11,18 @@ const debug = require("debug")("app:startup");                     // Startup De
 const dbDebbuger = require("debug")("app:db");                     // Database Debug Consoling
 const mongoose = require("mongoose");                              // Database Handling
 const app = express();                                             // Middleware Pipeline
+const cors = require('cors');                                      // CORS Settings
+
+// Cross-Origin Shared Resources
+app.use(express.json({
+    type: ['application/json', 'text/plain']
+}));
+
+app.use(cors({
+    methods: 'GET, POST, PUT, DELETE',
+    //origin: ['http://127.0.0.1:5501', 'http://localhost:5001', 'localhost:5001', "localhost"] // Allowed Origins
+    origin: "*"
+}));
 
 
 
@@ -18,6 +30,7 @@ app.use(express.json());                                           // Start Midd
 app.use(helmet());
 app.use(log);
 app.use(admin);
+
 
 
 
@@ -40,13 +53,17 @@ const login = require("./routes/login");
 const profile = require("./routes/profile");
 const tab = require("./routes/tab");
 const achievements = require("./routes/achievement");
+const subscribe = require("./routes/subscribe");
+const confirm = require("./routes/confirm");
 
 app.use("/", index);                                               // Index API Route
 app.use("/api/users", users);                                      // Users API Route
-app.use("/api/login", login);                                       // Login API Route
+app.use("/api/login", login);                                      // Login API Route
 app.use("/api/profiles", profile);                                 // Profile API Route
 app.use("/api/tabs", tab);                                         // Tab API Route
 app.use("/api/achievements", achievements);                        // Achievements API Route
+app.use("/api/subscribe", subscribe);                              // Subscribe API Route
+app.use("/api/confirm", confirm);                                  // Confirm API Route
 
 // Error Middleware (Must be the Last in the Pipeline)
 app.use(error);

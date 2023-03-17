@@ -14,12 +14,12 @@
 <body onload="start()">
     <h1>Riff Master - Login</h1>
     <form>
-        <fieldset>
+        <fieldset id="email-field">
             <label for="email">Email</label>
             <input id="email" type="text">
         </fieldset>
 
-        <fieldset>
+        <fieldset id="password-field">
             <label for="password">Password</label>
             <input id="password" type="password">
             <div class="reveal-password-wrapper">
@@ -31,7 +31,10 @@
 
         <span id="message"></span>
 
-        <button id="submit" type="button">Submit</button>
+        <div class="button-box">
+            <button id="login" type="button">Login</button>
+            <button id="register" type="button">Sign Up</button>
+        </div>
     </form>
 </body>
 </html>

@@ -1,4 +1,7 @@
 {
     "name": "Riff Master - Production",
-    "jwtPrivateKey": ""
+    "jwtPrivateKey": "",
+    "emailAddress": "",
+    "emailServer": "",
+    "emailPassword": ""
 }

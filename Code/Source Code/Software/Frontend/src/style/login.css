@@ -24,22 +24,30 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.5), rgba(17, 17, 17, 0.8), #050505), url("../../images/guitar_wallpaper2.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 h1 {
     margin-bottom: 100px;
-    color: rgb(0, 89, 45);
+    padding: 20px 40px;
+    color: #999;
     font-size: 50px;
     text-shadow: 2px 2px black;
     letter-spacing: 2px;
     font-family: "GlueGun";
+    background-color: #111;
+    border: 1px solid #333;
+    border-radius: 5px;
+    box-shadow: 20px 20px 20px black;
 }
 
 form {
     width: 750px;
-    height: 400px;
+    height: 450px;
     margin-bottom: 150px;
-    padding: 40px;
+    padding: 30px;
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
@@ -47,8 +55,10 @@ form {
     background-color: #111;
     border: 1px solid #333;
     color: #666;
-    font-size: 26px;
+    font-size: 22px;
     text-transform: capitalize;
+    border-radius: 5px;
+    box-shadow: 20px 20px 20px black;
 }
 
 fieldset {
@@ -59,6 +69,26 @@ fieldset {
     align-items: center;
     padding: 20px;
     border: none;
+    text-shadow: 2px 2px 3px black;
+}
+
+fieldset.highlight > input {
+    border: 2px solid #444;
+    color: white;
+}
+
+fieldset.highlight > label {
+    color: white;
+}
+
+fieldset.highlight > label:before {
+    position: absolute;
+    top: 24px;
+    left: 5px;
+    color:rgb(188, 21, 110);
+    content: "*";
+    font-size: 32px;
+    text-shadow: 2px 2px 3px black;
 }
 
 input {
@@ -76,6 +106,7 @@ input {
 
 input:focus {
     background-color: #0b0b0b;
+    border: 2px solid #333;
 }
 
 .reveal-password-wrapper {
@@ -113,8 +144,15 @@ button#reveal-password:hover i {
     color: #555;
 }
 
-button#submit {
+div.button-box {
+    width: 70%;
     margin-top: 30px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+button#login, button#register {
     width: 200px;
     height: 50px;
     border-radius: 10px;
@@ -125,16 +163,21 @@ button#submit {
     color: #666;
 }
 
-button#submit:hover {
+button#login:hover, button#register:hover {
     background-color: #0b0b0b;
     color: #999;
     cursor: pointer;
 }
 
 span#message {
-    padding-top: 10px;
+    display: none;
+    margin-top: 10px;
+    padding: 10px;
     font-size: 16px;
+    font-family: 'Courier New', Courier, monospace;
+    background-color: #0b0b0b;
+    border: 1px solid #222;
 }
 
-span#message.error { color: rgb(188, 21, 110); }
-span#message.info { color: rgb(5, 160, 109); }
+span#message.error { color: rgb(188, 21, 110); display: inline; }
+span#message.info { color: #666; display: inline; }
