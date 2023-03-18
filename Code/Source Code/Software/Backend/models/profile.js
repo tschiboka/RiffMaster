@@ -56,7 +56,7 @@ const schema = new mongoose.Schema({
         maxlength: 10,
         minlength: 4,
         trim: true,
-        validate: /^[\w]+$/                                        // Alpha Numeric
+        validate: /^[\w\d ]+$/                                     // Alpha Numeric
     },
     addressLine1: {                                                // ADDRESSLINE1: STRING REQUIRED, MIN: 5, MAX: 100
         type: String,   
@@ -68,7 +68,6 @@ const schema = new mongoose.Schema({
     addressLine2: {                                                // ADDRESSLINE2: STRING, MIN: 5, MAX: 100
         type: String,   
         maxlength: 100,
-        minlength: 1,
         trim: true,
     },
     phone: {                                                       // PHONE: STRING REQUIRED, UNIQUE MIN: 8, MAX: 20

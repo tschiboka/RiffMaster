@@ -243,16 +243,18 @@ async function register() {
     
     if (valid) {
         // Store values in Local Storage riffmaster Property
-        const user = { 
-            email,
-            userName,
-            password,
-            profile: {
-                firstName,
-                lastName,
+        const riffmaster = {
+            user: { 
+                email,
+                userName,
+                password,
+                profile: {
+                    firstName,
+                    lastName,
+                }
             }
         }
-        localStorage.setItem("riffmaster", JSON.stringify(user));
+        localStorage.setItem("riffmaster", JSON.stringify(riffmaster));
         window.location.href = "http://127.0.0.1:5501/Frontend/src/pages/profile.html";
     }
 }

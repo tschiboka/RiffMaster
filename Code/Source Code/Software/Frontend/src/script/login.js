@@ -44,11 +44,40 @@ function reveal() {
 async function login() {
     clearMessage();
     const valid = validateInputs();
+    const email = emailInput.value.toLowerCase().trim();
+    const password = passwordInput.value.trim();
+
+    console.log(email, password, JSON.stringify({ email, password }));
     
     if (valid) {
         generateFormMessage("Connecting to RiffMaster Server...", "info");
         const serverConnection = await probeConnection();
-        console.log(serverConnection);
+        
+        const options = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ email: email, password: password })
+        }
+        try {
+            clearMessage();
+            const response = await fetch("http://localhost:5000/api/login/", options);
+            const responseJson = await response.json();
+            if (!responseJson.success) { generateFormMessage(responseJson.message); return }
+            else {
+                generateFormMessage("Redirecting to RiffMaster...", "info");
+                const newStorage = JSON.stringify({ token: responseJson.token });
+                localStorage.setItem("riffmaster", newStorage);
+                console.log(responseJson.token);
+                window.location.href = "http://127.0.0.1:5501/Frontend/index.html";
+            }
+            
+        } catch(ex) {
+            generateFormMessage("Error");
+            console.log(ex);
+        }
     }
 }
 
@@ -62,7 +91,6 @@ async function probeConnection() {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         },
-        //body: JSON.stringify({ email, password })
     };
 
     try {

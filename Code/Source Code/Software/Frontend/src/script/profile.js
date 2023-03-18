@@ -23,6 +23,12 @@ let phoneField;
 let avatarField;
 let messageSpan;
 
+let email;
+let firstName;
+let lastName;
+let userName;
+let password
+
 
 
 function start() {
@@ -46,15 +52,28 @@ function start() {
     cityField = $("#city-field");
     postCodeField = $("#postcode-field");
     addressLine1Field = $("#address1-field");
-    addressLine2Field = $("#address1-field");
+    addressLine2Field = $("#address2-field");
     phoneField = $("#phone-field");
     avatarField = $(".avatar-box");
     messageSpan = $("#message");
     confirmButton = $("#register");
     
-    confirmButton.addEventListener("click", register);
-    avatarField.addEventListener("click", handleAvatarClick);
-    autocomplete(countryInput, countryList);
+    const tempStorage = JSON.parse(localStorage.getItem("riffmaster"));
+    email = tempStorage.user.email;
+    firstName = tempStorage.user.profile.firstName;
+    lastName = tempStorage.user.profile.lastName;
+    userName = tempStorage.user.userName;
+    password = tempStorage.user.password
+    const validTemp =  !!(email && firstName && lastName && userName && password); 
+    
+    if (validTemp) {
+        confirmButton.addEventListener("click", register);
+        avatarField.addEventListener("click", handleAvatarClick);
+        autocomplete(countryInput, countryList);
+    }
+    else {
+        generateFormMessage("Could Not Fetch Data From Register Page!");
+    }
 }
 
 
@@ -103,7 +122,7 @@ function validateDay() {
 
 function validateMonth() {
     const month = monthInput.value.trim();
-
+    
     if (!month) { generateFormMessage("Month Input Cannot be Left Empty!"); return false; }
     if (isNaN(month)) { generateFormMessage("Month Must be a Number!"); return false; }
     if (month < 1 || month > 12) { generateFormMessage("Month Must be Between 1 and 12!"); return false; }    
@@ -114,7 +133,7 @@ function validateMonth() {
 
 function validateYear() {
     const year = yearInput.value.trim();
-
+    
     if (!year) { generateFormMessage("Year Input Cannot be Left Empty!"); return false; }
     if (isNaN(year)) { generateFormMessage("Year Must be a Number!"); return false; }
     
@@ -182,6 +201,7 @@ function validateAddressLine1() {
 
 function validateAddressLine2() {
     const addressLine2 = addressLine2Input.value.trim();
+    if (!addressLine2) return true;
     if (addressLine2.length > 100) { generateFormMessage("Address Line 2 Must Be Maximum 100 Characters Long!"); return false; }
     if (!/^[a-z0-9 \-.,/']+$/i.test(addressLine2)) { generateFormMessage("Address Line 2 Must Not Contain Special Characters!"); return false; }
     return true;
@@ -213,37 +233,37 @@ function validateInputs() {
     // Call Validations in Reverse Order to Prevent the Error Message to be Overridden
     const avatarValid = validateAvatar();
     if (!avatarValid) { removeHighlight(); avatarField.classList.add("highlight"); }
-
+    
     const phoneValid = validatePhone();
     if (!phoneValid) { removeHighlight(); phoneField.classList.add("highlight"); }
-
+    
     const addressLine2Valid = validateAddressLine2();
     if (!addressLine2Valid) { removeHighlight(); addressLine2Field.classList.add("highlight"); }
-
+    
     const addressLine1Valid = validateAddressLine1();
     if (!addressLine1Valid) { removeHighlight(); addressLine1Field.classList.add("highlight"); }
-
+    
     const postCodeValid = validatePostCode();
     if (!postCodeValid) { removeHighlight(); postCodeField.classList.add("highlight"); }
-
+    
     const cityValid = validateCity();
     if (!cityValid) { removeHighlight(); cityField.classList.add("highlight"); }
-
+    
     const countryValid = validateCountry();
     if (!countryValid) { removeHighlight(); countryField.classList.add("highlight"); }
-
+    
     const dateValid = validateDate();
     if (!dateValid) { removeHighlight(); dobField.classList.add("highlight"); }
-
+    
     const yearValid = validateYear();
     if (!yearValid) { removeHighlight(); dobField.classList.add("highlight"); }
-
+    
     const monthValid = validateMonth();
     if (!monthValid) { removeHighlight(); dobField.classList.add("highlight"); }
-
+    
     const dayValid = validateDay();
     if (!dayValid) { removeHighlight(); dobField.classList.add("highlight"); }
-
+    
     return dayValid && monthValid && yearValid && dateValid && countryValid && cityValid && postCodeValid && addressLine1Valid && addressLine2Valid && phoneValid && avatarValid;
 }
 
@@ -278,7 +298,7 @@ function removeHighlight() {
 
 function generateAvatar() {
     const avatarDIV = $(".avatar-box");
-
+    
     for (let i = 1; i <= 15; i++) {
         const avatar = $append({
             tag: "img",
@@ -296,7 +316,7 @@ function generateAvatar() {
 function handleAvatarClick(event) {
     const id = event.target.id;
     avatarSelected = id;
-
+    
     // Clear Previously Selected Avatar
     const avatarsDOM = [ ...$all(".avatar") ];
     avatarsDOM.forEach(el => el.classList.remove("selected"));
@@ -306,41 +326,67 @@ function handleAvatarClick(event) {
 
 
 async function register() {
-    console.log("REGISTER");
     clearMessage();
-    const email = dayInput.value;
-    const password = femaleInput.value;
+    
+    if (validateInputs()) {
+        const day = dayInput.value.trim();
+        const month = monthInput.value.trim();
+        const year = yearInput.value.trim();
+        const dateOfBirth = `${ month }-${ day }-${ year }`; // US Format for DB Cause it Winges and Cries
+        const country = countryInput.value.trim();
+        const city = cityInput.value.trim();
+        const postCode = postCodeInput.value.trim();
+        const addressLine1 = addressLine1Input.value.trim();
+        const addressLine2 = addressLine2Input.value.trim();
+        const phone = phoneInput.value.trim();
+        const avatar = avatarSelected;
+        const gender = $("#male").checked ? "male" 
+                                          : $("#female").checked ? "female"
+                                          : "x"; 
+        const user = {
+            email,
+            userName,
+            password,
+            profile: {
+                firstName,
+                lastName,
+                dateOfBirth,
+                gender,
+                country,
+                city,
+                postCode,
+                addressLine1,
+                addressLine2,
+                phone,
+                avatar
+            }
+        }
 
-    console.log(validateInputs());
-    // if (validEmail && validPassword) {
-        // generateFormMessage("Sending Confirmation Email...", "info");
-        // //Send Subscription Confirmation Email
-        // const options = {
-            // method: 'POST',
-            // headers: {
-                // 'Accept': 'application/json',
-                // 'Content-Type': 'application/json'
-            // },
-            // body: JSON.stringify({ email, password })
-        // };
-    // 
-        // try {
-            // const response = await fetch("http://localhost:5000/api/subscribe/", options);
-            // const responseJSON = await response.json();
-            // if (responseJSON.success) {
-                // generateFormMessage(responseJSON.message, "info");
-                // return true;
-            // }
-            // else {
-                // generateFormMessage(responseJSON.message);
-                // return false;
-            // }
-        // } catch (ex) {
-            // console.log("ERROR", ex.message);
-            // generateFormMessage(ex.message);
-            // return false;
-        // }
-    // }
+        generateFormMessage("Sending Confirmation Email...", "info");
+        //Send Subscription Confirmation Email
+        const options = {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ user })
+        };
+    
+        try {
+            const response = await fetch("http://localhost:5000/api/subscribe/", options);
+            const responseJSON = await response.json();
+            if (responseJSON.success) { 
+                generateFormMessage(responseJSON.message); 
+                localStorage.deleteItem("riffmaster");
+                return true; 
+            }
+            else { console.log("HERE"); generateFormMessage(responseJSON.message); return false; }
+        } catch (ex) {
+            generateFormMessage(ex.message);
+            return false;
+        }
+    }
 }
 
 

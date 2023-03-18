@@ -1,16 +1,19 @@
 function getStorage() {
-    const storage = localStorage.getItem("riffmaster") || {};
-    if (!storage.token) storage.token = ""                      // Set Token Empty
+    const storage = localStorage.getItem("riffmaster");
 
-    return storage;
+    return storage ? JSON.parse(storage) : null;
+}
+
+function validateCredentials() {
+    const storage = getStorage();
+    if (!storage?.token) window.location.href ="/Frontend/src/pages/login.html";
 }
 
 function start() {
-    const storage = getStorage();
-    if (!storage.token) redirectToLogin();
+    validateCredentials();
 }
 
-function redirectToLogin() {
-    window.location.href ="/Frontend/src/pages/login.html";
-    console.log("Redirect")
+function signout() {
+    localStorage.removeItem("riffmaster");
+    validateCredentials();
 }

@@ -8,6 +8,7 @@ const bcrypt = require("bcrypt");                                  // Hashing Pa
 router.post("/", async (req, res) => {                             // POST
     // Validate User Body
     if (!req.body) return res.status(400).json( { success: false, message: `There is no request body!` } );
+    req.body.userName = "Temporary"                                // To Pass Validation User Name id Not Required
     const { error } = validate(req.body);                          // Validate User Body
     const message400 = error?.details[0].message;                  // Invalid Body Message
     const json400 = { success: false, message: message400 };       // Invalid Body Object
@@ -29,9 +30,9 @@ router.post("/", async (req, res) => {                             // POST
     const updated = { ...user }._doc;                              // Dereference User (Cannot Delete Password on Prototype)
     delete updated.password;                                       // Delete Password                                    
     res
-        .status(201)
+        .status(301)
         .header("x-auth-token", token)                             // Append Header with Token
-        .json({ success: true, user: updated });                   // Return 201 Created and Success
+        .json({ success: true, user: updated, token });            // Return 201 Created and Success
 });
 
 

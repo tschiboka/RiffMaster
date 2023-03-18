@@ -11,7 +11,9 @@ const Token = require("../models/token");                          // Verificati
 
 router.post("/", async (req, res) => {
     // Check If User Exist with Email
-    const email = req.body.email;                                  // Get Email from Body
+    console.log(req.body.user)
+    const email = req.body.user.email;                             // Get Email from Body
+    const password = req.body.password;                            // Get Password from Body
     const userExists = await User.findOne({ email });              // Get User with Email
     if (userExists) return res.status(403).json({                  // Return 403 Resource Already Exists
         success: false,
@@ -22,14 +24,13 @@ router.post("/", async (req, res) => {
 
     // Create New User
     const user = new User({ email, password });
-    console.log(user);
 
     // Send Email Confirmation Link
     const EMAIL_ADDRESS = config.get('emailAddress');
     const EMAIL_PASSWORD = config.get('emailPassword');
     const EMAIL_SERVER = config.get('emailServer');
     const jwtPrivateKey = config.get("jwtPrivateKey");             // Get JWT Private Key
-    const tokenString = jwt.sign({ email: req.body.email }, jwtPrivateKey);
+    const tokenString = jwt.sign(req.body.user, jwtPrivateKey);
     const url = `http://127.0.0.1:${ process.env.PORT }/api/confirm/`;
     const confirmationLinkURL = url + tokenString;
     const token = await new Token({ token: tokenString }, config.get('jwtPrivateKey'));
@@ -37,7 +38,7 @@ router.post("/", async (req, res) => {
 
     const mailOptions = {
         from: EMAIL_ADDRESS,
-        to: req.body.email,
+        to: email,
         subject: 'RiffMaster | Email Address Verification',
         html: `
             <h1>RiffMaster Account Verification</h1>
