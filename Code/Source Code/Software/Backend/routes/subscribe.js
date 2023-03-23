@@ -26,33 +26,29 @@ router.post("/", async (req, res) => {
     const user = new User({ email, password });
 
     // Send Email Confirmation Link
-    const EMAIL_ADDRESS = config.get('emailAddress');
-    const EMAIL_PASSWORD = config.get('emailPassword');
-    const EMAIL_SERVER = config.get('emailServer');
+    const EMAIL_ADDRESS = config.get('emailAddress');              // Get Email From Environmental Variables
+    const EMAIL_PASSWORD = config.get('emailPassword');            // Get Email Server Password From Environmental Variables
+    const EMAIL_SERVER = config.get('emailServer');                // Get Server Type From Environmental Variables
     const jwtPrivateKey = config.get("jwtPrivateKey");             // Get JWT Private Key
-    const tokenString = jwt.sign(req.body.user, jwtPrivateKey);
-    const url = `http://127.0.0.1:${ process.env.PORT }/api/confirm/`;
-    const confirmationLinkURL = url + tokenString;
-    const token = await new Token({ token: tokenString }, config.get('jwtPrivateKey'));
-    await token.save();
+    const tokenString = jwt.sign(req.body.user, jwtPrivateKey);    // Create a JWT Signature
+    const url = `http://127.0.0.1:${ process.env.PORT }/api/confirm/`; // TEMP URL to Localhost
+    const confirmationLinkURL = url + tokenString;                
+    const token = await new Token({ token: tokenString }, config.get('jwtPrivateKey')); // Create Token on Database
+    await token.save();                                            // Save Token
 
-    const mailOptions = {
-        from: EMAIL_ADDRESS,
-        to: email,
+    const mailOptions = {                                          // Email Specifications
+        from: EMAIL_ADDRESS,                                       
+        to: email,                                                 // From Request
         subject: 'RiffMaster | Email Address Verification',
         html: `
             <h1>RiffMaster Account Verification</h1>
-
             <h2>Welcome to my RiffMaster subscriptions!</h2>
-
             <p>
                 We couldn't be more excited to have you join our amazing guitar learning platform!
                 <br />
                 Please verify your email address by clicking on the link below.
             </p>
-
-            <a href="${ confirmationLinkURL }">Verify Email Address</a>
-        `
+            <a href="${ confirmationLinkURL }">Verify Email Address</a>`
     };
 
     const transporter = nodemailer.createTransport({

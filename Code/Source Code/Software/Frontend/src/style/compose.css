@@ -1,7 +1,7 @@
 @font-face {
     font-family: "GlueGun";
     src: url("../../Fonts/GlueGun.otf");
-}
+} 
 
 * {
     margin: 0;
@@ -55,6 +55,10 @@ h2 {
     font-size: 20px;
 }
 
+#tempo {
+    font-style: italic;
+}
+
 button {
     background-color: transparent;
     border: 1px solid #333;
@@ -85,6 +89,10 @@ button {
     position: relative;
     display: flex;
     flex-direction: column;
+}
+
+.bar.highlight {
+    background-color: rgba(255, 255, 255, 0.05);
 }
 
 .bar-number {

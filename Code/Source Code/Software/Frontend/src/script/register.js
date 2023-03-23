@@ -143,7 +143,7 @@ function validateUserName() {
     const userName = userNameInput.value.trim();
     
     if (!userName) { generateFormMessage("User Name Input Cannot be Left Empty!"); return false; }
-    if (userName.length < 5) { generateFormMessage("User Name Must Be at Least 8 Characters Long!"); return false; }
+    if (userName.length < 5) { generateFormMessage("User Name Must Be at Least 5 Characters Long!"); return false; }
     if (userName.length > 20) { generateFormMessage("User Name Must Be Maximum 50 Characters Long!"); return false; }
     if (!/^[a-z0-9\-_']+$/i.test(userName)) { generateFormMessage("User Name Must Not Contain Special Characters or Space!"); return false; }
     return true;
