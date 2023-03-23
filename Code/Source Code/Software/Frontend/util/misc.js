@@ -49,3 +49,39 @@ function getAudio() {
     });
     return audio;
 }
+
+
+
+// Create a Custom Full Screen Message Element with Header, Content and Action Buttons with Callback
+function $fullScreenMessage(msg) {
+    const { headerText, headerCSSColor, content, actionButtons } = msg;                       // Deconstruct Message
+    const message = $append({ tag: "div", className: "message", parent: $("body") });         // Append Body with Message Div
+    const messageBox = $append({ tag: "div", className: "message__box", parent: message });   // Append Message Box Div
+    const header = $append({ tag: "div", className: "message__header", parent: messageBox }); // Append Message Box Div
+    header.innerHTML = headerText;                                                            // Set Header Text
+    header.style.color = headerCSSColor || "white";                                           // Set Header Color
+    const messageContent = $append({ tag: "p", parent: messageBox });                         // Append Message Box Div
+    messageContent.innerHTML = content;                                                       // Set Message Content Text
+
+    // Buttons
+    const buttonBox = $append({ tag: "div", className: "button__box", parent: messageBox });  // Append Message Action Button Box Div
+    const removeFunction = function() { $("body").removeChild(this.closest(".message")); }    // Remove Message Callback
+    actionButtons.forEach(btn => {                                                            // Traverse Button Objects
+        const { text, color, callback = removeFunction } = btn;                               // Deconstruct Button Properties
+        const messageButton = $append({ tag: "button", parent: buttonBox });                  // Append Message Box Div
+        messageButton.innerHTML = text;                                                       // Set Button Text
+        messageButton.style.color = color; 
+        messageButton.addEventListener("click", callback);                                    // Add Callback Event Listener
+
+    });
+}
+
+
+
+function $redirect(url) {
+    // Save User and Token
+    window.location.href = url;
+    console.log("Save User and Token for Redirect");
+    console.log("Copy in a Variable");
+    console.log("Delete Local Storage");
+}

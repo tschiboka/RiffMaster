@@ -56,7 +56,9 @@ h2 {
 }
 
 #tempo {
+    margin-left: 20px;
     font-style: italic;
+    color: #777;
 }
 
 button {
@@ -92,22 +94,21 @@ button {
 }
 
 .bar.highlight {
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: rgba(0, 255, 128, 0.08);
 }
 
 .bar-number {
     position: absolute;
     color: #555;
 }
-
-.bar.active {
-    background-color: red;
+.bar.highlight .beat {
+    color: #666;
 }
 
 .string {
     display: flex;
     justify-content: space-evenly;
-}
+}    
 
 .bar > * {
     border-left: 2px solid #555;
@@ -120,7 +121,7 @@ button {
 
 .bar-super {
     border: none;
-    color: white;
+    color: #ddd;
     font-weight: bold;
 }
 
@@ -137,9 +138,14 @@ button {
 }
 
 .beat.hasnote {
-    color: white;
+    color: white !important;
     font-family: monospace;
     z-index: 100;
+}
+
+.beat.highlight {
+    color: springgreen !important;
+    transform: scale(1.3);
 }
 
 .play-wrapper {

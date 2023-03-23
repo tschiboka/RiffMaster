@@ -10,19 +10,89 @@
 //     "Notes:Start:Duration:ChordName"
 //     Notes:     String Char (E|A|D|G|B|e) and Fret Number | Empty String
 //     Start:     N of 32nd (0 - 31)
-//     Duration:  W:whole, H:Half, Q:Quarter, E:Eight, X:Sixteenth, T:Thirtysecondth .:Extended -:Rest
+//     Duration:  W:whole, H:Half, Q:Quarter, E:Eight, X:Sixteenth, T:Thirtysecondth .:Extended ..: Long-Extended -:Rest
 //     Chord:     Chord Name (Em7, G#, ...)
+
+
+
+// Validate Tab Formatting and Values; Return a Boolean
+function validateTabFormatting(tab) {
+    const indexPage = "http://127.0.0.1:5501/Frontend/index.html";
+    const color = "mediumOrchid";
+    const actionButtons = [
+        { text: "Back", color, callback: () => $redirect(indexPage) },
+        { text: "OK" }
+    ];
+    const headerText = "Tablature Format Error";
+    let msg = "";
+
+    if (!tab) msg = "The Provided Tab is Undefined and Cannot Be Loaded!";
+    else {
+        if (!tab.tempo) msg = "The Provided Tab Must Have a Tempo!";
+        else if (isNaN(tab.tempo)) msg = "The Provided Tab Must Have a Tempo in the Form of a Number!";
+        else if (tab.tempo < 20) msg = "The Minimum Tab Tempo is 20!";
+        else if (tab.tempo > 300) msg = "The Maximum Tab Tempo is 300!";
+        else {
+            const bars = tab.bars;
+            if (bars) {
+                bars.forEach(bar => bar.forEach(note => {
+                    const [ noteStr, start, duration, chord] = note.split(":");
+                    const notes = noteStr.split(",");
+                    
+                    notes.forEach(n => {
+                        const isValidFormat = /^[a-z]\d\d?$/i.test(n);
+                        if (!isValidFormat) msg = "Invalid Note Format!<br />" + note;
+                       
+                        const string = n.match(/E|A|D|G|B/gi)?.[0];       // Get the String Letter
+                        if (!string) msg = "Missing or Invalid String Value!<br />" + note;
+                        
+                        const fret = n.match(/\d+/g)?.[0];                // Get the Fret Number
+                        if (isNaN(fret)) msg = "Fret Must be a Number!<br />" + note;
+                        if (Number(fret) > 20) msg = "Fret Number Must Be Between 0 and 20!<br />" + note;
+                    });
+                
+                    if (isNaN(start) || isNaN(parseInt(start))) msg = "Start Must Be a Number!<br />" + note;
+                    if (Number(start) < 0 || Number(start) > 31) msg = "Start Must Be Between 0 and 32!<br />" + note;
+
+                    if (!duration) msg = "Invalid Duration!<br />" + note;
+                    if (!duration.match(/^[whqext]\.?\.?$/ig)) msg = "Invalid Duration!<br />" + note;
+                }));
+            }
+        }
+    }
+    
+    const content = msg;
+    if (msg.length) $fullScreenMessage({ headerText, content, actionButtons });
+    return !msg.length;
+}
+
+
 
 // Set the Title and Band of the Tablature and Tempo
 function setTabTitle(tab) {
     const bandElem = $("#band");                                  // Get Band Element
     const titleElem = $("#title");                                // Get Title Element
     const tempoElem = $("#tempo");                                // Get Tempo Element
+    const { title, band, tempo } = { ...tab };                    // Get Tab Info
+    const tempoNames = [
+        { name: "Grave", maxBPM: 20 },
+        { name: "Lento", maxBPM: 60 },
+        { name: "Larghetto", maxBPM: 66 },
+        { name: "Adagio", maxBPM: 76 },
+        { name: "Andante", maxBPM: 108 },
+        { name: "Moderato", maxBPM: 120 },
+        { name: "Allegro", maxBPM: 156 },
+        { name: "Vivace", maxBPM: 168 },
+        { name: "Presto", maxBPM: 200 },
+        { name: "Prestissimo", maxBPM: 208 },
+    ];
 
-    const {title, band, tempo} = {...tab};                        // Get Tab Info
+    const tn = tempoNames.map(t => t.maxBPM <= tempo && t).filter(t => !!t);
+    const tempoName = tn[tn.length - 1].name;
+
     titleElem.innerHTML = title || "No Title";                    // Set Title
     bandElem.innerHTML = " | " +  (band || "No Band");            // Set Band
-    tempoElem.innerHTML = " ( &#119135; = " +  tempo + " ) ";     // Set Tempo
+    tempoElem.innerHTML = `(&#119135; = ${ tempo } - ${ tempoName })`; // Set Tempo
 }
 
 
@@ -76,6 +146,7 @@ function displayTabSheet(tab, rows = 1, editable = false) {
                 for (let beat_i = 0; beat_i < 32; beat_i++) {      // Iterate Beats 0 - 31
                     const noteId = `row${ row }-bar${ bar }-string${ stringName }-beat${ beat_i }`;  // Create Note ID String
                     const noteElem = $append({ tag: "div", id: noteId, className: "beat", parent: stringElem }); // Create Note Element
+                    noteElem.classList.add("note-" + beat_i);
                     noteElem.innerHTML = "—";                      // Add a Hyphen - As the Content
                     noteElem.style.minWidth = Math.floor(barWidth / 32) + "px"; // Set Minimum Note Width
                     noteElem.style.fontSize = fontSize;            // Set Font Size
@@ -123,7 +194,6 @@ function displayNotesOnTab(bars, from = 0) {
 
         
         // Set Bar Number
-        //console.log("ROW NUM", rowNum, "BARS IN TABLINE", app.barsInTabLine, "BAR NUM", barNum, "FROM", from);
         const absoluteBarNum = rowNum * app.barsInTabLine + barNum + from + 1; // Calculate the Displayed Bar Number
         const barNumberDiv = $append({ tag: "div", className: "bar-number", id: "bar-number-" + absoluteBarNum ,parent: barChordsDiv }); // Create Bar Number Div
         barNumberDiv.innerHTML = absoluteBarNum;                   // Display Bar Number
