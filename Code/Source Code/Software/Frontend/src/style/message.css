@@ -9,7 +9,7 @@
     justify-content: center;
     align-items: center;
     background-color: rgba(0, 0, 0, 0.8);
-    z-index: 100;
+    z-index: 10000;
 }
 
 .message__box {
@@ -65,14 +65,16 @@
     padding: 10px;
     background-color: #141414;
     font-size: 26px;
-    border-radius: 0;
+    border-radius: 10px;
     border: 1px solid #333;
     font-family: "GlueGun";
     letter-spacing: 2px;
+    box-shadow: 5px 5px 10px black, -5px -5px 10px rgba(51, 51, 51, 0.3);
 }
 
 .message button:hover {
-    background-color: #252525;
+    background-color: #0b0b0b;
     color: white;
     cursor: pointer;
+    box-shadow: -5px -5px 10px black, 5px 5px 10px rgba(51, 51, 51, 0.3);
 }

@@ -68,9 +68,8 @@ async function login() {
             if (!responseJson.success) { generateFormMessage(responseJson.message); return }
             else {
                 generateFormMessage("Redirecting to RiffMaster...", "info");
-                const newStorage = JSON.stringify({ token: responseJson.token });
+                const newStorage = JSON.stringify({ token: responseJson.token, user: responseJson.user });
                 localStorage.setItem("riffmaster", newStorage);
-                console.log(responseJson.token);
                 window.location.href = "http://127.0.0.1:5501/Frontend/index.html";
             }
             

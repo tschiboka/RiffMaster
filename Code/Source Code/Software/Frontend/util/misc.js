@@ -81,7 +81,12 @@ function $fullScreenMessage(msg) {
 function $redirect(url) {
     // Save User and Token
     window.location.href = url;
-    console.log("Save User and Token for Redirect");
-    console.log("Copy in a Variable");
-    console.log("Delete Local Storage");
+    const storage = JSON.stringify({ token, user });
+}
+
+
+
+function $getStorage() {
+    const storage = localStorage.getItem("riffmaster");
+    return storage ? JSON.parse(storage) : null;
 }

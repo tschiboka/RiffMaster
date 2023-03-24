@@ -130,6 +130,30 @@ router.put("/:id", async (req, res) => {                           // PUT
 
 
 
+router.get("/:email/:username", async (req, res) => {               // GET: EMAIL, USERNAME
+    const { email, username } = { ...req.params };
+    // Find If Email Already Exists
+    console.log(email, username)
+    if (email) {
+        const emailExist = await User.findOne({ email });          // Existing User Email
+        const emailMessage = `User Exists with Email: ${ email }`; // Email Exists Message
+        const emailJson = { success: false, message: emailMessage }; // Email Exists Object
+        if (emailExist) return res.status(403).json(emailJson);    // Return 403 Resource Already Exists 
+    }
+    
+    // Find If User Name Already Exists
+    if (username) {
+        const userName = req.body.userName;                        // User Name
+        const nameExist = await User.findOne({'userName': username }); // Existing User Email
+        const nameMessage = `User Exists with Name: ${ username }`;// User Name Exists Message
+        const nameJson = { success: false, message: nameMessage }; // User Name Exists Object
+        if (nameExist) return res.status(403).json(nameJson);      // Return 403 Resource Already Exists
+    }
+    res.status(200).json({ success: true });
+});
+
+
+
 module.exports = router;
 
 

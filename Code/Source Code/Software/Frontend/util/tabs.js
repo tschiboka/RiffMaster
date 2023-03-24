@@ -91,16 +91,17 @@ function setTabTitle(tab) {
     const tempoName = tn[tn.length - 1].name;
 
     titleElem.innerHTML = title || "No Title";                    // Set Title
-    bandElem.innerHTML = " | " +  (band || "No Band");            // Set Band
-    tempoElem.innerHTML = `(&#119135; = ${ tempo } - ${ tempoName })`; // Set Tempo
+    bandElem.innerHTML = "&nbsp;|&nbsp;" +  (band || "No Band");            // Set Band
+    tempoElem.innerHTML = `[ &#119135; = ${ tempo } - ${ tempoName } ]`; // Set Tempo
 }
 
 
 
 // Get How Many Bars Can Fit Screen and Staff Width
 function getBarMeasurements() {
+    const padding = 80;
     const staff = $(".staff");                                     // Get Staff Element
-    const width = staff.offsetWidth                                // Staff (Cotta Lines) Width
+    const width = staff.offsetWidth - padding;                     // Staff (Cotta Lines) Width
     const minNoteWidth = 10;                                       // Minimum Note Width
     const notesOnBar = 32;                                         // 32 * 32nd Notes Can Be Displayed
     const minBarWidth = minNoteWidth * notesOnBar;                 // Min 320px Bar Widht
@@ -137,6 +138,7 @@ function displayTabSheet(tab, rows = 1, editable = false) {
             const barSuper = $append({ tag: "div", id: id + "-super", className: "bar-super", parent: barElem });  // Add Line Above Staff
             barSuper.style.minHeight = fontSize;                   // Set Height of Line Above Stuff
 
+
             // Add String Lines to Bar
             for (let string = 0; string < 6; string++) {           // Iterate Strings 0 - 5
                 const stringName = "eBGDAE"[string];               // Get String Name
@@ -151,6 +153,15 @@ function displayTabSheet(tab, rows = 1, editable = false) {
                     noteElem.style.minWidth = Math.floor(barWidth / 32) + "px"; // Set Minimum Note Width
                     noteElem.style.fontSize = fontSize;            // Set Font Size
                 }   
+            }
+
+            // Duration Box
+            const durationBoxElem = $append({ tag: "div", className: "duration-box", parent: barElem });  // Create Duration Box Element
+            for (let beat_i = 0; beat_i < 32; beat_i++) {          // Iterate Beats 0 - 31
+                const durationElem = $append({ tag: "div", className: "duration", id:`row${ row }-bar${ bar }-duration${ beat_i }`, parent: durationBoxElem });
+                durationElem.classList.add("duration-" + beat_i);  // Add Duratiion Beat Class
+                durationElem.style.width = Math.floor(barWidth / 32) + "px"; // Set Minimum Note Width
+                $append({ tag: "div", parent: durationElem });
             }
         }
     }
@@ -169,6 +180,11 @@ function clearTabStyling() {
     chordNameDivs.forEach(div => div.innerHTML = "");              // Clear Chords
     const highlightedBars = [...$all(".bar")];                     // Get All Highlighted Bars
     highlightedBars.forEach(b => b.classList.remove("highlight")); // Remove Highlight
+    const durations = [...$all(".duration")];                      // Get All Highlighted Bars
+    durations.forEach(d => {
+        d.classList.remove(...d.classList);                        // Remove Every Class
+        d.classList.add("duration");                               // Add Duration Class Back
+    });
 }
 
 
@@ -211,7 +227,8 @@ function displayNotesOnTab(bars, from = 0) {
                 
                 const noteId = `#row${ rowNum }-bar${ barNum }-string${ string }-beat${ start }`; // Create an ID for the Note Element
                 const noteElem = $( noteId );                      // Get Note Element by Its ID
-                noteElem.classList.add("hasnote");                 // Add HASNOTE Class to Note Element
+                if (noteElem.classList.contains("hasnote")) noteElem.classList.add("has-multiple-notes");
+                else noteElem.classList.add("hasnote");            // Add HASNOTE Class to Note Element
                 noteElem.innerHTML = fret;                         // Add the Corresponing Fret Number
             });
 
@@ -222,6 +239,11 @@ function displayNotesOnTab(bars, from = 0) {
                 chordTextElem.style.left = start * barWidth / 32 + 2 + "px"; // Set Left Position
                 chordTextElem.style.fontSize = chordFontSize;      // Set Font Size
             }
+
+            // Add Beat Duration
+            const durationID = `#row${ rowNum }-bar${ barNum }-duration${ start }`; // Create the Note Duration ID
+            const durationDiv = $(durationID);                     // Get Duration Element
+            durationDiv.classList.add("duration-type-" + duration.replace(/\./g, "-").toLowerCase()); // Add the Appropriate Note Duration Class
         }
     }
 }

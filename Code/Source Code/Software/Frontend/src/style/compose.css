@@ -10,6 +10,7 @@
     font-family: Arial, Helvetica, sans-serif;
     scrollbar-color: springgreen black;
     scrollbar-width: thin;
+    text-shadow: 2px 2px black;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -23,22 +24,25 @@ body {
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    background-color: #111;
+    background-color: #151515;
     overflow: hidden;
 }
 
 h1 {
     padding: 20px;
     padding-bottom: 0;
-    color: #ddd;
-    font-size: 32px;
+    color: springgreen;
+    font-size: 50px;
     font-weight: lighter;
     text-align: center;
+    font-family: "GlueGun";
+    letter-spacing: 5px;
+    text-shadow: 5px 5px black;
 }
 
 h2 {
     min-width: 100vw;
-    padding: 20px;
+    padding: 10px 40px 20px 40px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -46,7 +50,7 @@ h2 {
 }
 
 h2 i {
-    font-size: 30px;
+    font-size: 22px;
 }
 
 h2 {
@@ -55,18 +59,54 @@ h2 {
     font-size: 20px;
 }
 
+.tabinfo {
+    height: 50px;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.8);
+    border: 2px solid #333;
+    border-radius: 10px;
+    box-shadow: 10px 10px 20px black, 10px 10px 20px inset black, -10px -10px 10px rgba(51, 51, 51, 0.3), -10px -10px 20px inset rgba(51, 51, 51, 0.5);
+    cursor: pointer;
+}
+
+.pagination span {
+    color: #555;
+}
+
+#current-bar, #current-note {
+    color: #999;
+}
+
+#title, #band {
+    color: springgreen;
+}
+
 #tempo {
     margin-left: 20px;
-    font-style: italic;
-    color: #777;
+    color: #555;
 }
 
 button {
-    background-color: transparent;
-    border: 1px solid #333;
+    height: 50px;
     width: 50px;
-    height: 40px;
+    margin: 0 10px;
+    background-color: transparent;
+    border: 2px solid #333;
+    border-radius: 10px;
+    box-shadow: 10px 10px 20px black, 10px 10px 20px inset black, -10px -10px 10px rgba(51, 51, 51, 0.3), -10px -10px 20px inset rgba(51, 51, 51, 0.5);
     color: #aaa;
+}
+
+button:hover {
+    color: springgreen;
+    box-shadow: -10px -10px 20px black, -10px -10px 20px inset black, 10px 10px 10px rgba(51, 51, 51, 0.3), 10px 10px 20px inset rgba(51, 51, 51, 0.5);
+    cursor: pointer;
+}
+
+h2 button:last-child {
+    margin-right: 0;
 }
 
 #tab-sheet {
@@ -76,33 +116,50 @@ button {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    align-items: center;
     padding: 0 20px;
-    background-color: #050505;
+    background-color: #111;
+    border-bottom: 1px solid #222;
 }
 
 .staff {
-    width: 100%;
+    width: calc(100% - 40px);
+    margin: 20px;
+    padding: 0px 40px;
     display: flex;
     justify-content: center;
-    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    border: 2px solid #333;
+    box-shadow: 10px 10px 20px black, 10px 10px 50px inset black, -10px -10px 10px rgba(51, 51, 51, 0.3), -10px -10px 50px inset rgba(51, 51, 51, 0.5);
 }
 
 .bar {
+    padding: 20px 0;
     position: relative;
     display: flex;
     flex-direction: column;
 }
 
 .bar.highlight {
-    background-color: rgba(0, 255, 128, 0.08);
+    margin: 10px 0;
+    padding: 10px;
+    background-color: black;
+    border-radius: 10px;
+    border: 2px solid #333;
+    box-shadow: 10px 10px 20px black, 10px 10px 50px inset black, -10px -10px 10px rgba(51, 51, 51, 0.3), -10px -10px 50px inset rgba(51, 51, 51, 0.5);
+    border-left: none;
+    border-right: none;
+    z-index: 1000;
 }
 
 .bar-number {
     position: absolute;
+    font-size: 16px;
     color: #555;
 }
 .bar.highlight .beat {
-    color: #666;
+    color: #555;
 }
 
 .string {
@@ -111,29 +168,137 @@ button {
 }    
 
 .bar > * {
-    border-left: 2px solid #555;
+    border-left: 2px solid #333;
 }
 
 
 .bar:last-child .string {
-    border-right: 2px solid #555;
+    border-right: 2px solid #333;
 }
 
 .bar-super {
     border: none;
-    color: #ddd;
+    color: #aaa;
     font-weight: bold;
 }
 
 .bar-chord-txt {
     position: absolute;
-    width: 50px;
+    background-color: #111;
 }
 
+.duration-box {
+    display: flex;
+    height: 20px;
+    border: none;
+}
+
+.duration div {
+    height: 28px;
+    position: absolute;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: bottom center;
+    opacity: 0.3;
+}
+
+.duration.duration-type-w-- div {
+    background-image: url("../../images/music-notations/w--.png");
+    width: 28px !important;
+}
+
+.duration.duration-type-w- div {
+    background-image: url("../../images/music-notations/w-.png");
+    width: 20px !important;
+}
+
+.duration.duration-type-w div {
+    background-image: url("../../images/music-notations/w.png");
+    width: 12px !important;
+}
+
+.duration.duration-type-h-- div {
+    background-image: url("../../images/music-notations/h--.png");
+    width: 26px !important;
+}
+
+.duration.duration-type-h- div {
+    background-image: url("../../images/music-notations/h-.png");
+    width: 22px !important;
+}
+
+.duration.duration-type-h div {
+    background-image: url("../../images/music-notations/h.png");
+    width: 18px !important;
+}
+
+.duration.duration-type-q-- div {
+    background-image: url("../../images/music-notations/q--.png");
+    width: 26px !important;
+}
+
+.duration.duration-type-q- div {
+    background-image: url("../../images/music-notations/q-.png");
+    width: 22px !important;
+}
+
+.duration.duration-type-q div {
+    background-image: url("../../images/music-notations/q.png");
+    width: 18px !important;
+}
+
+.duration.duration-type-e-- div {
+    background-image: url("../../images/music-notations/e--.png");
+    width: 26px !important;
+}
+
+.duration.duration-type-e- div {
+    background-image: url("../../images/music-notations/e-.png");
+    width: 22px !important;
+}
+
+.duration.duration-type-e div {
+    background-image: url("../../images/music-notations/e.png");
+    width: 18px !important;
+}
+
+.duration.duration-type-x-- div {
+    background-image: url("../../images/music-notations/x--.png");
+    width: 26px !important;
+}
+
+.duration.duration-type-x- div {
+    background-image: url("../../images/music-notations/x-.png");
+    width: 22px !important;
+}
+
+.duration.duration-type-x div {
+    background-image: url("../../images/music-notations/x.png");
+    width: 18px !important;
+}
+
+.duration.duration-type-t-- div {
+    background-image: url("../../images/music-notations/t--.png");
+    width: 26px !important;
+}
+
+.duration.duration-type-t- div {
+    background-image: url("../../images/music-notations/t-.png");
+    width: 22px !important;
+}
+
+.duration.duration-type-t div {
+    background-image: url("../../images/music-notations/t.png");
+    width: 18px !important;
+}
+
+
+
 .beat {
+    height: 20px;
     display: flex;
     justify-content: center;
-    color: #555;
+    color: #333;
     font-weight: bold;
 }
 
@@ -143,28 +308,42 @@ button {
     z-index: 100;
 }
 
+.beat.has-multiple-notes {
+    color: deeppink !important;
+}
+
 .beat.highlight {
     color: springgreen !important;
-    transform: scale(1.3);
+    transform: scale(1.05);
 }
 
 .play-wrapper {
+    width: 100%;
+    margin-bottom: 10px;
     padding: 20px;
     display: flex;
     justify-content: center;
 }
 
-#play, #pause {
-    width: 70px;
-    height: 70px;
-    color: springgreen;
-    border-radius: 100%;
-}
-
-#play > i, #pause > i {
-    font-size: 30px;
-}
-
 button:disabled {
     display: none;
+}
+
+input {
+    width: 70%;
+    min-height: 55px;
+    padding: 0 20px;
+    margin: 20px;
+    background: #111;
+    border: 2px solid #222;
+    border-radius: 10px;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5), -5px -5px 10px rgba(255, 255, 255, 0.03);
+    outline: none;
+    color: #999;
+    font-size: 22px;
+}
+
+input:focus {
+    background-color: #0b0b0b;
+    border: 2px solid #333;
 }

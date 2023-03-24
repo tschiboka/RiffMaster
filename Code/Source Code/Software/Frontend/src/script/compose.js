@@ -33,127 +33,127 @@ const app = {
 
 
 // Temporary Here (This Will Be Dynamically Loaded)
-const tab = {
+let tab = {
     title: "Master of Puppets",
     band: "Metallica",
-    tempo: 80,
+    tempo: 212,
     bars: [
-        [
-            "E0:0:W:WHOLE",
+        [   
+            "E0,A2,D2:0:Q..:E5",
         ],
         [
-            "E0:0:Q",
-            "E2:7:Q",
-            "E3:15:Q",
-            "A0:23:Q",
+            "E10,A12:0:Q:D5",
+            "E9,A11:8:Q:C#5",
+            "E8,A10:16:W:C5",
+        ],
+        [],
+        [
+            "E0:0:E",
+            "E0:3:E",
+            "E12:7:E",
+            "E0:11:E",
+            "E0:15:E",
+            "E11:19:E",
+            "E0:23:E",
+            "E0:27:E",
         ],
         [
-            "E0,A2,D2,G1,B0,e0:0:E.:E",
-        ],
-        [
-            "E0,A2,D2,G1,B0,e0:0:E:E",
-        ],
-        [
-            "E0,A2,D2,G1,B0,e0:0:X.:E",
-        ],
-        [
-            "E0,A2,D2,G1,B0,e0:0:X:E",
-        ],
-        [
-            "E0,A2,D2,G1,B0,e0:0:T.:E",
-        ],
-        [
-            "E0,A2,D2,G1,B0,e0:0:T:E",
+            "E10,A12:0:Q:D5",
+            "E9,A11:8:Q:C#5",
+            "E8,A10:16:W:C5",
         ],
         [
             "E0:0:E",
-            "E1:8:E",
-            "E2:16:E",
-            "E3:24:E",
+            "E0:3:E",
+            "E7:7:E",
+            "E0:11:E",
+            "E0:15:E",
+            "E6:19:E",
+            "E0:23:E",
+            "E0:27:E",
         ],
         [
-            "E4:0:E",
-            "E5:8:E",
-            "E6:16:E",
-            "E7:24:E",
-        ],
-        [
-            "E8:0:E",
-            "E9:8:E",
-            "E0:16:E",
-            "E1:24:E",
-        ],
-        [
-            "E0,A2:0:E:E5",
-            "E10,A12:16:X:D5",
-            "E9,A11:20:X:C#5",
-            "E8,A10:24:X:C5",
+            "E5:0:E",
+            "E0:3:E",
+            "E4:7:E",
+            "E0:11:E",
+            "E3:15:E",
+            "E0:19:E",
+            "E2:23:E",
+            "E0:27:E",
         ],
         [
             "E0:0:E",
-            "E1:8:E",
-            "E2:16:E",
-            "E3:24:E",
+            "E0:3:E",
+            "E12:7:E",
+            "E0:11:E",
+            "E0:15:E",
+            "E11:19:E",
+            "E0:23:E",
+            "E0:27:E",
         ],
         [
-            "E4:0:E",
-            "E5:8:E",
-            "E6:16:E",
-            "E7:24:E",
-        ],
-        [
-            "E8:0:E",
-            "E9:8:E",
-            "E0:16:E",
-            "E1:24:E:HERE",
-        ],
-        [
-            "A0:0:E",
-            "A9:8:E",
-            "A0:16:E",
-            "A1:24:X:FUCK",
-        ],
-        [
-            "E0,A2:0:E:E5",
-            "E10,A12:16:X:D5",
-            "E9,A11:20:X:C#5",
-            "E8,A10:24:X:C5",
+            "E10,A12:0:Q:D5",
+            "E9,A11:8:Q:C#5",
+            "E8,A10:16:W:C5",
         ],
         [
             "E0:0:E",
-            "E1:8:E",
-            "E2:16:E",
-            "E3:24:E",
+            "E0:3:E",
+            "E7:7:E",
+            "E0:11:E",
+            "E0:15:E",
+            "E6:19:E",
+            "E0:23:E",
+            "E0:27:E",
         ],
         [
-            "E4:0:E",
-            "E5:8:E",
-            "E6:16:E",
-            "E7:24:E",
-        ],
-        [
-            "E0:0:E",
-            "E1:8:E",
-            "E2:16:E",
-            "E3:24:E",
-        ],
-        [
-            "E4:0:E",
-            "E5:8:E",
-            "E6:16:E",
-            "E7:24:E",
+            "E5:0:E",
+            "E0:3:E",
+            "E4:7:E",
+            "E0:11:E",
+            "E3:15:E",
+            "E0:19:E",
+            "E2:23:E",
+            "E0:27:E",
         ],
         [
             "E0:0:E",
-            "E1:8:E",
-            "E2:16:E",
-            "E3:24:E",
+            "E1:3:E",
+            "A2:7:E",
+            "E0:11:E",
+            "E1:15:E",
+            "A3:19:E",
+            "E0:23:E",
+            "E1:27:E",
         ],
         [
-            "E4:0:E",
-            "E5:8:E",
-            "E6:16:E",
-            "E7:24:E",
+            "A4:0:E",
+            "E0:3:E",
+            "E2:7:E",
+            "A3:11:E",
+            "E0:15:E",
+            "E2:19:E",
+            "A2:23:E",
+            "A2:27:E",
+        ],
+        [
+            "E0:0:E",
+            "E1:3:E",
+            "A2:7:E",
+            "E0:11:E",
+            "E1:15:E",
+            "A3:19:E",
+            "E0:23:E",
+            "E1:27:E",
+        ],
+        [
+            "E3,A5:0:E:G5",
+            "E2,A4:3:E:F#5",
+            "E3,A5:11:E:G5",
+            "E2,A4:15:E:F#5",
+            "E3,A5:23:E:G5",
+            "E2,A4:27:E:F#5",
         ],
     ]
 }
@@ -162,9 +162,10 @@ const tab = {
 
 // Set Application State and Load Tablature
 function start() {
+    const storage = $getStorage();
+    if (!storage?.user) $redirect("http://127.0.0.1:5501/Frontend/index.html");
     app.musicAgreement = true;                                     // Temporary Solution
-    //app.notes = getAudio();                                        // Load Audio Files
-    
+
     // LOAD TAB!!!!!!!!!!!!
     const validTab = validateTabFormatting(tab);                   // Only Validated Tabs Can Be Displayed
     if (!validTab) return;
@@ -175,9 +176,10 @@ function start() {
     app.tempo = tab.tempo;                                         // Set Tempo
     
     
-    setTabTitle(tab);                                              // Place Title and Band on Page
-    displayTabSheet(tab, app.staffNum, true);                      // Display an Empty Tab Sheet
-    displayNotesOnTab(tab.bars);                                   // Display Notes on the Tab Sheet (from Bar 0)
+    setTabTitle(app.tab);                                              // Place Title and Band on Page
+    displayTabSheet(app.tab, app.staffNum, true);                      // Display an Empty Tab Sheet
+    displayNotesOnTab(app.tab.bars);                                   // Display Notes on the Tab Sheet (from Bar 0)
+    tab = undefined;
     
     const gameLoopTimer = setInterval(gameLoop, getGameLoopIntervalsInMS()); // Create a Game Loop Interval Function
     app.gameLoopTimer = gameLoopTimer;                             // Globally Available Game Loop Timer
@@ -193,7 +195,7 @@ const guitarNotes = ["E2", "F2", "Fs2", "G2", "Gs2", "A2", "As2", "B2", "C3", "C
 
 
 function getGameLoopIntervalsInMS() {
-    const beatInMS = 60 / app.tempo;                               // How Many Beats In a Second
+    const beatInMS = 60 / app.tab.tempo;                           // How Many Beats In a Second
     const thirtysecondInMS = beatInMS / 8 * 1000;                  // Interval of One Thirtysecondth Note (Shortest Playable Note)
     const gameLoopFreqMs = Math.round(thirtysecondInMS);           // Calculate Loop Frequency in Milli Seconds
     return gameLoopFreqMs;
@@ -236,7 +238,6 @@ const stringJumps = { E: 0, A: 5, D: 10, G: 15, B: 19, e: 24 };
 // Game Loop
 function gameLoop() {                                              // Run on Every 32nd Beat
     if (app.play) {                                                // If User Pressed Play Button
-        //selectBeat(app.staffNum);
         if (app.noteIndex === 0) {
             centerCurrentBarInTab();                               // On First Beat Redraw for Centering Active Bar and Notes
             highlightCurrentBar();                                 // Highlight Current Bar
@@ -271,7 +272,7 @@ function gameLoop() {                                              // Run on Eve
         if (app.noteIndex === MAXBEAT) {                           // If Maximum Reached
             app.noteIndex = 0;                                     // Reset Note
             app.barIndex++;                                        // Increment Bar Index
-            if (app.barIndex >= tab.bars.length) {                 // If No More Bars to Play
+            if (app.barIndex >= app.tab.bars.length) {             // If No More Bars to Play
                 playTab(true);                                     // Pause
                 app.barIndex = 0;                                  // Reset Bar Index
                 app.noteIndex = 0;                                 // Reset Note Index
@@ -307,7 +308,7 @@ function centerCurrentBarInTab() {
            }
         }
     }
-    displayNotesOnTab(tab.bars, from);
+    displayNotesOnTab(app.tab.bars, from);
 }
 
 
@@ -352,11 +353,78 @@ function playTab(pause = false) {
         app.play = true;                                           // Set Play
         playBtn.disabled = true;                                   // Disable Play Button
         pauseBtn.disabled = false;                                 // Enable Pause Button
-        displayNotesOnTab(tab.bars);                               
+        displayNotesOnTab(app.tab.bars);                               
     }
     else {                                                         // If Pause Pressed
         app.play = false;                                          // Unset Play
         playBtn.disabled = false;                                  // Enable Play Button
         pauseBtn.disabled = true;                                  // Disable Pause Button
     }
+}
+
+
+
+function setTempo() {
+    const message = $append({ tag: "div", className: "message", parent: $("body") });         // Append Body with Message Div
+    const messageBox = $append({ tag: "div", className: "message__box", parent: message });   // Append Message Box Div
+    const header = $append({ tag: "div", className: "message__header", parent: messageBox }); // Append Message Box Div
+    header.innerHTML = "Set Tempo";                                // Set Header Text
+    header.style.color = "white";                                  // Set Header Color
+    const content = "The music sheet's tempo may be set for a different tempo. The tempo measurement is in BPM (Beat per Minute), and its value must be between 20 and 300.";
+    const messageContent = $append({ tag: "p", parent: messageBox });                         // Append Message Box Div
+    messageContent.innerHTML = content;                            // Set Message Content Text
+
+    const input = $append({ tag: "input", id:"tempo-input", className: "input", parent: messageBox });  // Append Message Action Button Box Div
+    input.placeholder = app.tab.tempo + " BPM";
+
+
+    // Buttons
+    const buttonBox = $append({ tag: "div", className: "button__box", parent: messageBox });  // Append Message Action Button Box Div
+    const messageButton = $append({ tag: "button", parent: buttonBox }); // Append Message Box Div
+    messageButton.innerHTML = "OK";                                // Set Button Text
+    messageButton.style.color = "springgreen"; 
+    messageButton.addEventListener("click", () => {
+        const value = $("#tempo-input").value;
+        if (!isNaN(value) && value >= 20 && value <= 300) app.tab.tempo = Number(value);
+        setTabTitle(app.tab);
+        clearInterval(app.gameLoopTimer);
+        const gameLoopTimer = setInterval(gameLoop, getGameLoopIntervalsInMS()); // Create a Game Loop Interval Function
+        app.gameLoopTimer = gameLoopTimer;                             // Globally Available Game Loop Timer
+        $("body").removeChild(message);
+    });  
+}
+
+
+
+function setTitleAndAuthor() {
+    const message = $append({ tag: "div", className: "message", parent: $("body") });         // Append Body with Message Div
+    const messageBox = $append({ tag: "div", className: "message__box", parent: message });   // Append Message Box Div
+    const header = $append({ tag: "div", className: "message__header", parent: messageBox }); // Append Message Box Div
+    header.innerHTML = "Set Title and Author";                                // Set Header Text
+    header.style.color = "white";                                  // Set Header Color
+    const content = "Author or Band Property May Be Left Empty.";
+    const messageContent = $append({ tag: "p", parent: messageBox });                         // Append Message Box Div
+    messageContent.innerHTML = content;                            // Set Message Content Text
+
+    const titleInput = $append({ tag: "input", id:"title-input", className: "input", parent: messageBox });  // Append Message Action Button Box Div
+    titleInput.placeholder = app.tab.title;
+
+    const authorInput = $append({ tag: "input", id:"band-input", className: "input", parent: messageBox });  // Append Message Action Button Box Div
+    authorInput.placeholder = app.tab.band;
+
+
+    // Buttons
+    const buttonBox = $append({ tag: "div", className: "button__box", parent: messageBox });  // Append Message Action Button Box Div
+    const messageButton = $append({ tag: "button", parent: buttonBox }); // Append Message Box Div
+    messageButton.innerHTML = "OK";                                // Set Button Text
+    messageButton.style.color = "springgreen"; 
+    messageButton.addEventListener("click", () => {
+        const title = $("#title-input").value;
+        const band = $("#band-input").value;
+        if (title) app.tab.title = title;
+        app.tab.band = band;
+        setTabTitle(app.tab);
+        
+        $("body").removeChild(message);
+    });  
 }

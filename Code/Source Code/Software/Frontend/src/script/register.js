@@ -229,7 +229,6 @@ function validateInputs() {
 
 
 async function register() {
-    console.log("REGISTER");
     clearMessage();
     
     const email = emailInput.value.trim();
@@ -240,21 +239,40 @@ async function register() {
     const confirm = confirmInput.value.trim();
     const valid = validateInputs();
     
-    
-    if (valid) {
-        // Store values in Local Storage riffmaster Property
-        const riffmaster = {
-            user: { 
-                email,
-                userName,
-                password,
-                profile: {
-                    firstName,
-                    lastName,
+    if (!valid) return;
+
+    try {
+        const options = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        };
+        const URL = `http://localhost:5000/api/users/${ email }/${ userName }`;
+        const response = await fetch(URL, options);
+        const responseJson = await response.json();
+        if (!responseJson.success) { 
+            generateFormMessage(responseJson.message); 
+        }
+        else {
+            // Store values in Local Storage riffmaster Property
+            const riffmaster = {
+                user: { 
+                    email,
+                    userName,
+                    password,
+                    profile: {
+                        firstName,
+                        lastName,
+                    }
                 }
             }
+            localStorage.setItem("riffmaster", JSON.stringify(riffmaster));
+            window.location.href = "http://127.0.0.1:5501/Frontend/src/pages/profile.html";
         }
-        localStorage.setItem("riffmaster", JSON.stringify(riffmaster));
-        window.location.href = "http://127.0.0.1:5501/Frontend/src/pages/profile.html";
+    }
+    catch (ex) {
+        generateFormMessage(ex.message);
     }
 }
