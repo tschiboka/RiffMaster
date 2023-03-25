@@ -23,18 +23,31 @@
             </div>
           
             <div class="pagination">
-                <span>
-                    Bar <span id="current-bar">1<span> of 
-                        <span id="total-bars">32</span> |
-                    Note <span id="current-note">1<span> of 
-                        <span id="total-notes">107</span>
-                </span>
+                Bar 
+                <span id="current-bar"></span>
+                of 
+                <span id="total-bars"></span>
+                | Note
+                <span id="current-note">0</span>
+                of 
+                <span id="total-notes"></span>
             </div>
 
-            <div>
+            <div id="function-buttons">
                 <button title="Set Tempo" onclick="setTempo()"><i class="fa-regular fa-clock"></i></button>
                 <button title="Metronome Volume"><i class="fa-regular fa-hourglass"></i></button>
-                <button title="Edit Tab"><i class="fa-solid fa-pen"></i></button>
+                <button 
+                    id="edit-button"
+                    title="Edit Tab" 
+                    onclick="toggleTabEditing()">
+                        <i class="fa-solid fa-pen"></i>
+                        <div class="btn-switch-light"></div>
+                </button>
+                <button
+                    disabled
+                    title="Undo" 
+                    id="undo"
+                    onclick="undo()"><i class="fa-solid fa-rotate-left"></i></button>
                 <button title="Open Tab" id="open"><i class="fa-solid fa-folder-open"></i></button>
                 <button title="Save Tab" id="save"><i class="fa-solid fa-floppy-disk"></i></button>
                 <button title="Delete Tab" id="delete"><i class="fa-solid fa-trash"></i></button>
@@ -45,15 +58,63 @@
     <div id="tab-sheet"></div>
  
     <div class="play-wrapper">
-        <button><i class="fa-solid fa-backward-fast"></i></button>
-        <button><i class="fa-solid fa-backward-step"></i></button>
-        <button id="play" onclick="playTab()"><i class="fa-solid fa-play"></i></button>
-        <button id="pause" onclick="playTab(true)" disabled><i class="fa-solid fa-pause"></i></button>
-        <button><i class="fa-solid fa-square"></i></button>
-        <button><i class="fa-solid fa-circle"></i></button>
-        <button><i class="fa-solid fa-forward-fast"></i></button>
-        <button><i class="fa-solid fa-forward-step"></i></button>
-        <button><i class="fa-solid fa-repeat"></i></button>
+        <button 
+            disabled 
+            id="fast-backward" 
+            title="Fast Backward"
+            onclick="stepBackward(true)">
+            <i class="fa-solid fa-backward-fast"></i>
+        </button>
+        <button 
+            disabled 
+            id="backward" 
+            title="Backward"
+            onclick="stepBackward()">
+            <i class="fa-solid fa-backward-step"></i>
+        </button>
+        <button 
+            id="play" 
+            onclick="playTab()" 
+            title="Play">
+            <i class="fa-solid fa-play"></i>
+        </button>
+        <button 
+            disabled
+            id="pause" 
+            title="Pause"
+            onclick="playTab(true)">
+            <i class="fa-solid fa-pause"></i>
+        </button>
+        <button 
+            disabled 
+            title="Stop"
+            id="stop"
+            onclick="stopPlaying()">
+            <i class="fa-solid fa-square"></i></button>
+        <button 
+            id="record"
+            title="Record"
+            ><i class="fa-solid fa-circle"></i></button>
+        <button 
+            id="forward"
+            title="Forward"
+            onclick="stepForward()">
+            <i class="fa-solid fa-forward-step"></i></button>
+            <button 
+            id="fast-forward"
+            title="Fast Forward"
+            onclick="stepForward(true)">
+            <i class="fa-solid fa-forward-fast"></i></button>
+        <button
+            id="repeat"
+            title="Repeat">
+            <i id="repeat-icon" class="fa-solid fa-repeat"></i>
+            <div id="repeat-btn-switch-light" class="btn-switch-light"></div>
+            <div id="repeat__from-to">
+                <input id="repeat-from" type="text" placeholder="from" />
+                <input id="repeat-to" type="text" placeholder="to" />
+            </div>    
+        </button>
     </div>
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js" integrity="sha512-6+YN/9o9BWrk6wSfGxQGpt3EUK6XeHi6yeHV+TYD2GR0Sj/cggRpXr1BrAQf0as6XslxomMUxXp2vIl+fv0QRA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>

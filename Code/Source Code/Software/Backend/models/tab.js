@@ -39,6 +39,13 @@ const schema = new mongoose.Schema({                               // Tab Schema
         max: 1000,
         default: 120
     },
+    isPublic: {
+        type: Boolean,
+        default: false
+    },
+    cover: {
+        type: String,
+    },
     content: {
         type: String,
         required: true,
@@ -63,6 +70,8 @@ function validateTab(tab) {
         tuning: Joi.string().min(6).max(6),
         difficulty: Joi.number().min(1).max(10),
         tempo: Joi.number().min(1).max(1000),
+        isPublic: Joi.boolean(),
+        cover: Joi.string(),
         content: Joi.string().required(),
         created: Joi.date(),
         updated: Joi.date()
