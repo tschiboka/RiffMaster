@@ -37,7 +37,7 @@ function getDOMElements() {
 }
 
 
-
+ 
 function handleStrumActivated(event, strum) {
     const positions = app.controllerState.highestFretPositions[strum - 1];  // Finger Positions on a String Row
     const upperMost =  positions[positions.length - 1];                     // Topmost Pressed Position

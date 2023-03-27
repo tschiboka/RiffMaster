@@ -220,7 +220,6 @@ h2 button:last-child {
 
 .bar-chord-txt {
     position: absolute;
-    background-color: #111;
 }
 
 .duration-box {
@@ -551,4 +550,391 @@ input:focus {
     width: 100px;
     min-height: 40px;
     margin: 0;
+}
+
+
+
+/* Save Form */
+#save__bg {
+    position: absolute;
+    min-width: 100vw;
+    min-height: 100vh;
+    background-color: #131313;
+    display: flex;
+    display: none;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    background: linear-gradient(45deg, #050505, rgba(0, 0, 0, 0.7), rgba(17, 17, 17, 0.8), #050505), url("../../images/guitar_wallpaper5.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    z-index: 10000;
+}
+
+#save__bg h1 {
+    padding: 20px 40px;
+    color: #999;
+    font-size: 50px;
+    text-shadow: 2px 2px black;
+    letter-spacing: 2px;
+    font-family: "GlueGun";
+    background-color: #111;
+    border: 1px solid #333;
+    border-radius: 5px;
+    box-shadow: 20px 20px 20px black;
+}
+
+#save__bg form {
+    width: 750px;
+    height: 700px;
+    margin-bottom: 70px;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    background-color: #111;
+    border: 1px solid #333;
+    color: #666;
+    font-size: 22px;
+    text-transform: capitalize;
+    border-radius: 5px;
+    box-shadow: 20px 20px 20px black;
+}
+
+#save__bg fieldset {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-shadow: 2px 2px 3px black;
+    border: none;
+}
+
+#save__bg fieldset > label:first-child {
+    width: 30%;
+}
+
+#save__bg fieldset.highlight > input {
+    border: 2px solid #444;
+    color: white;
+}
+
+#save__bg fieldset.highlight > label {
+    color: white;
+}
+
+#save__bg fieldset.highlight > label:before {
+    position: absolute;
+    top: 24px;
+    left: 5px;
+    color:rgb(188, 21, 110);
+    content: "*";
+    font-size: 32px;
+    text-shadow: 2px 2px 3px black;
+}
+
+#save__bg input {
+    width: 70%;
+    height: 55px;
+    padding: 0 20px;
+    background: #111;
+    border: 2px solid #222;
+    border-radius: 10px;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5), -5px -5px 10px rgba(255, 255, 255, 0.03);
+    outline: none;
+    color: #999;
+    font-size: 22px;
+}
+
+#save__bg input:focus {
+    background-color: #0b0b0b;
+    border: 2px solid #333;
+}
+
+#save__bg input#save__author {
+    color: #333;
+}
+
+#save__public, #save__private {
+    width: 30px !important;
+}
+
+#save__bg #save__difficulty.slider {
+    -webkit-appearance: none;
+    min-height: 5px;
+    width: 50%;
+    height: 10px;
+    background: linear-gradient(90deg, aqua, springgreen, yellow, orange, deeppink);
+    opacity: 0.4;
+    outline: none;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5), -5px -5px 10px rgba(255, 255, 255, 0.03);
+}
+  
+#save__difficulty-box {
+    min-height: 70px;
+}
+
+#save__difficulty-box span {
+    height: 70px;
+    min-width: 20%;
+    margin-right: 10px;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    background-color: #111;
+    font-size: 17px;
+}
+
+.slider:hover {
+    opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5), -5px -5px 10px rgba(255, 255, 255, 0.03);
+    cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5), -5px -5px 10px rgba(255, 255, 255, 0.03);
+    cursor: pointer;
+}
+  
+
+#save__bg button i {
+    font-size: 30px;
+    color: #333;
+}
+
+#save__bg div.button-box {
+    width: 70%;
+    margin-top: 50px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+#save__bg span#save__message {
+    display: none;
+    margin-top: 10px;
+    padding: 10px;
+    font-size: 16px;
+    font-family: 'Courier New', Courier, monospace;
+    width: 70%;
+    min-height: 40px;
+    margin-bottom: 20px;
+    text-align: center;
+    color: rgb(188, 21, 110);
+    background-color: #0b0b0b;
+    border: 1px solid #222;
+}
+
+#save__bg button {
+    font-size: 20px;
+    width: 200px;
+    height: 50px;
+    border-radius: 10px;
+    background: #111;
+    border: none;
+    border: 2px solid #222;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5), -5px -5px 10px rgba(255, 255, 255, 0.03);
+}
+
+#save__bg button:hover {
+    background-color: #0b0b0b;
+    cursor: pointer;
+}
+
+#save__bg span#message.error { color: rgb(188, 21, 110); display: inline; }
+#save__bg span#message.info { color: #666; display: inline; }
+
+
+
+/* OPEN TABLATURE FORM */
+#open__bg {
+    position: absolute;
+    min-width: 100vw;
+    min-height: 100vh;
+    background-color: #131313;
+    display: flex;
+    display: none;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    background: linear-gradient(45deg, #050505, rgba(0, 0, 0, 0.7), rgba(17, 17, 17, 0.8), #050505), url("../../images/guitar_wallpaper4.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    z-index: 10000;
+}
+
+#open__bg h1 {
+    padding: 20px 40px;
+    color: #999;
+    font-size: 50px;
+    text-shadow: 2px 2px black;
+    letter-spacing: 2px;
+    font-family: "GlueGun";
+    background-color: #111;
+    border: 1px solid #333;
+    border-radius: 5px;
+    box-shadow: 20px 20px 20px black;
+}
+
+#open__form {
+    width: 900px;
+    height: 650px;
+    max-height: 650px;
+    margin-bottom: 70px;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    background-color: #111;
+    border: 1px solid #333;
+    color: #666;
+    font-size: 22px;
+    text-transform: capitalize;
+    border-radius: 5px;
+    box-shadow: 20px 20px 20px black;
+}
+
+#open__form ul {
+    width: 100%;
+    height: 100%;
+    background-color: #050505;
+    border-radius: 5px;
+    border: 1px solid #333;
+    margin-bottom: 20px;
+    list-style: none;
+    font-size: 16px;
+    font-family: monospace;
+}
+
+#open__form ul li {
+    width: 100%;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #333;
+}
+
+#open__form ul li * {
+    pointer-events: none;
+}
+
+#open__form ul li:hover {
+    background-color: rgba(255, 255, 255, 0.03);
+    cursor: pointer;
+}
+
+#open__form ul li.highlight {
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+#open__form ul li.highlight div:first-child {
+    color: aqua;
+}
+
+#open__form ul li > div:first-child {
+    width: 450px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding-left: 20px;
+    border-right: 1px solid #333;
+    font-family: monospace;
+}
+
+#open__form ul li > div:nth-child(2) {
+    width: 50px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid #333;
+    opacity: 0.7;
+}
+
+#open__form ul li > div:nth-child(3) {
+    width: 100px;
+    height: 100%;
+    display: flex;
+    padding: 10px;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid #333;
+    opacity: 0.7;
+}
+
+#open__form ul li > div:nth-child(3) .line {
+    width: 10px;
+    height: 10px;
+    border: 1px solid #333;
+    opacity: 0.1;
+}
+
+#open__form ul li > div:nth-child(3) .line.highlight {
+    opacity: 0.7;
+}
+
+#open__form ul li > div:nth-child(4) {
+    width: 250px;
+    height: 100%;
+    display: flex;
+    padding: 10px;
+    align-items: center;
+    justify-content: center;
+    font-family: monospace;
+}
+
+
+#open__bg span#open__message {
+    display: none;
+    margin-top: 10px;
+    padding: 10px;
+    font-size: 16px;
+    font-family: 'Courier New', Courier, monospace;
+    width: 90%;
+    min-height: 40px;
+    margin-bottom: 20px;
+    text-align: center;
+    color: rgb(188, 21, 110);
+    background-color: #0b0b0b;
+    border: 1px solid #222;
+}
+
+#open__form button {
+    font-size: 20px;
+    width: 200px;
+    height: 50px;
+    border-radius: 10px;
+    background: #111;
+    border: none;
+    border: 2px solid #222;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5), -5px -5px 10px rgba(255, 255, 255, 0.03);
+}
+
+#open__form button:hover {
+    background-color: #0b0b0b;
+    cursor: pointer;
+}
+
+.fa-star {
+    display: block;
+    font-size: 12px;
+    color:rgb(188, 21, 110);
+    border-radius: 100%;
+    box-shadow: 3px 3px black;
+    border: 1px solid #333;
+    padding: 3px;
+    transform: translateX(-7px);
+    background-color: black;
 }

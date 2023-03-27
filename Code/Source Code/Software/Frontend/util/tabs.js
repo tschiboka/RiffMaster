@@ -34,6 +34,7 @@ function validateTabFormatting(tab) {
         else if (tab.tempo > 300) msg = "The Maximum Tab Tempo is 300!";
         else {
             const bars = tab.bars;
+            if (!Array.isArray(bars)) msg = "Bars Must be an Array!";
             if (bars) {
                 bars.forEach(bar => bar.forEach(note => {
                     const [ noteStr, start, duration, chord] = note.split(":");
@@ -120,6 +121,7 @@ function getBarMeasurements() {
 function displayTabSheet(tab, rows = 1, editable = false) {   
     // Append Tablature Sheet
     const tabSheet = $("#tab-sheet");                              // Get Tab Sheet Element
+    tabSheet.innerHTML = "";
     
     for (let row = 0; row < rows; row++) {                         // Number of Bar Rows (Default 1)
         // Adjust Bar Width to Screen

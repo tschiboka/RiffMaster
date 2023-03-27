@@ -27,29 +27,34 @@ const app = {
     staffNum: 3,                                                   // Number of 6 of Lines (Strings) Displayed Horizontally
     metronomeAudio: null,                                          // Will Hold the Howler Object for Metronome
     metronomeVolume: 0.2,                                          // Metronome on Low Volume by Default
+    metronomeIsOn: true,                                           // Default Metronome
     tab: null,                                                     // Save Tab Here
     tabEditingEnabled: false,                                      // User Cannot Change the Content of the Tablature
     tabHistoryStack: [],                                           // History for Undo Feature
     repeatAllowed: false,                                          // Allow Users to Repeat a Section or the Whole Tab
+    isRecordAllowed: false,                                        // Allow RiffMaster Console as a Tab Input
+    controllerState: initialiseAppControllerState(),               // Set Inital Controller State and Variables
+    unfinalisedNotes: [],                                          // Store Strums that Has Not Yet Been Finalised (Record Playing)
 }
 
 
 
 // Temporary Here (This Will Be Dynamically Loaded)
 let tab = {
-    title: "Master of Puppets",
-    band: "Metallica",
-    tempo: 212,
+    title: "Untitled",
+    band: "No Band",
+    tempo: 120,
     bars: [
-        [   
-            "E0,A2,D2:0:Q..:E5",
-        ],
-        [
-            "E10,A12:0:Q:D5",
-            "E9,A11:8:Q:C#5",
-            "E8,A10:16:W:C5",
-        ],
-        [],
+        []
+        // [   
+        //     "E0,A2,D2:0:Q..:E5",
+        // ],
+        // [
+        //     "E10,A12:0:Q:D5",
+        //     "E9,A11:8:Q:C#5",
+        //     "E8,A10:16:W:C5",
+        // ],
+        // [],
         // [
         //     "E0:0:E",
         //     "E0:3:E",
@@ -170,14 +175,14 @@ function start() {
     app.musicAgreement = true;                                     // Temporary Solution
 
     // LOAD TAB!!!!!!!!!!!!
-    const validTab = validateTabFormatting(tab);                   // Only Validated Tabs Can Be Displayed
+    app.tab = app.tab || tab;                                      // Set Tab
+    const validTab = validateTabFormatting(app.tab);               // Only Validated Tabs Can Be Displayed
     if (!validTab) return;
-    app.tab = tab;                                                 // Set Tab
     saveHistory();                                                 // Start History
 
-    app.title = tab.title;                                         // Set Title
-    app.band = tab.band;                                           // Set Band
-    app.tempo = tab.tempo;                                         // Set Tempo
+    app.title = app.tab.title;                                     // Set Title
+    app.band = app.tab.band;                                       // Set Band
+    app.tempo = app.tab.tempo;                                     // Set Tempo
     
     
     setTabTitle(app.tab);                                          // Place Title and Band on Page
@@ -250,8 +255,6 @@ const getRepeatValues = () => {
     if (isNaN(from) || from < 1 || !Number.isInteger(from)) from = 1;
     if (isNaN(to) || to < 1 || !Number.isInteger(to)) to = app.tab.bars.length;
 
-    console.log("GET VALUES");
-    console.log(from, to);
     return { from, to };
 }
 
@@ -301,10 +304,11 @@ function gameLoop() {                                              // Run on Eve
 
         // Metronome for Every Beat
         if (app.noteIndex % 8 === 0) {                             // Every 8 32nd Note
-            app.metronomeAudio.volume(app.metronomeVolume);        // Set Metronome Volume
-            app.metronomeAudio.play();                             // Play Metronome
+            if (app.metronomeIsOn) {
+                app.metronomeAudio.volume(app.metronomeVolume);        // Set Metronome Volume
+                app.metronomeAudio.play();                             // Play Metronome
+            }
         }
-
 
         app.noteIndex++;                                  
         // Increment Bar and Beat
@@ -315,12 +319,13 @@ function gameLoop() {                                              // Run on Eve
 
             let { from, to } = getRepeatValues();
             if (app.barIndex >= to)
-            app.barIndex = from - 1;                               // Reset Bar Index
+            if (app.repeatAllowed) app.barIndex = from - 1;        // Reset Bar Index
             app.noteIndex = 0;                                     // Reset Note Index
 
             if (app.barIndex >= app.tab.bars.length) {             // If No More Bars to Play
+                if (app.isRecordAllowed) app.tab.bars.push([]);    // Always Append Tab While Recording
                 // Stop or Repeat at the End
-                if (!app.repeatAllowed) {
+                else if (!app.repeatAllowed) {
                     playTab(true);                                 // Pause
                     app.barIndex = 0;                              // Reset Bar Index
                     app.noteIndex = 0;                             // Reset Note Index
@@ -812,7 +817,7 @@ function editBar(values, beatInfo) {
         .map(s => values[s] ? s + values[s] : "")
         .filter(n => n)
         .join(",");
-    const duration = values.duration.replace(/__/g, "..");
+    const duration = values.duration.replace(/_/g, ".");
     let newNoteString = `${ note }:${ noteIndex }:${ duration }`;
     if (values.chordName) newNoteString += `:${ values.chordName }`;
 
@@ -1047,6 +1052,581 @@ function repeat(event){
             light.classList.remove("active");
             inputBox.style.display = "none";
         }
-        console.log(light.classList)
     }
+}
+
+
+
+function setMetronome() {
+    app.metronomeIsOn = !app.metronomeIsOn;
+    const light = $("#metronome-btn-switch-light");
+
+    if (app.metronomeIsOn) light.classList.add("active");
+    else light.classList.remove("active");
+}
+
+
+function save() {
+    const bgElem = $("#save__bg");
+    const titleInput = $("#save__title");
+    const artistInput = $("#save__artist");
+    const authorInput = $("#save__author");
+    const tempoInput = $("#save__tempo");
+    const user = $getStorage().user;
+
+    titleInput.value = app.tab.title;
+    artistInput.value = app.tab.band;
+    authorInput.value = user.userName;
+    tempoInput.value = app.tab.tempo;
+
+    bgElem.style.display = "flex";
+    const messageElem = $("#save__message");
+    messageElem.style.display = "none";
+}
+
+
+
+function setDifficultyRangeText(elem) {
+    const difficulty = elem.value;
+    const text = ["For Babies", "Super Easy", "Easy", "Begginner", "Moderate", "Intermediate", "Hard", "Super Hard", "Expert", "God Level"];
+    $("#save__difficulty-text").innerHTML = difficulty + " - " + text[difficulty - 1];
+}
+
+
+
+function closeSaveForm() {
+    const bgElem = $("#save__bg");
+    bgElem.style.display = "none";
+    const messageElem = $("#save__message");
+    messageElem.style.display = "none";
+}
+
+
+
+async function saveTablature() {
+    const user = $getStorage().user;   
+    const title = $("#save__title").value;
+    const artist = $("#save__artist").value;
+    const tempo = $("#save__tempo").value;
+    const isPublic = $("#save__public").checked;
+    const difficulty = $("#save__difficulty").value;
+    const messageElem = $("#save__message");
+    const content = app.tab.bars;
+
+    const { valid, message = "" } = validateSaveForm(title, artist, tempo, app.tab);
+    if (!valid) {
+        messageElem.style.display = "block";
+        messageElem.innerHTML = message;
+        return;
+    }
+    else {
+        messageElem.style.display = "none";
+    }
+
+    try {
+        const options = {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ 
+                userID: user._id, 
+                title, 
+                artist, 
+                difficulty, 
+                isPublic, 
+                tempo, 
+                content: JSON.stringify(content) 
+            })
+        };
+
+        const URL = "http://localhost:5000/api/tabs/";
+        const response = await fetch(URL, options);
+        const responseJSON = await response.json();
+
+        if (responseJSON.success) {
+            messageElem.style.display = "block";
+            messageElem.innerHTML = "Tab Saved!";
+            closeSaveForm();
+        }
+        else {
+            messageElem.style.display = "block";
+            messageElem.innerHTML = responseJSON.message;
+            // If Tab Exists with Title
+            const tabID = responseJSON.id;
+            if (response.status === 409 && tabID) modifyTab(options, tabID);
+            return false;
+        }
+    } catch (ex) {
+        messageElem.style.display = "block";
+        messageElem.innerHTML = ex;
+        return true;
+    }
+}
+
+
+
+async function modifyTab(options, tabID) {
+    const messageElem = $("#save__message");
+    options.method = "PUT";
+
+    try {
+        const URL = "http://localhost:5000/api/tabs/" + tabID;
+        const response = await fetch(URL, options);
+        const responseJSON = await response.json();
+        if (responseJSON.success) {
+            closeSaveForm();
+            messageElem.style.display = "block";
+            messageElem.innerHTML = "Tab Modified!";
+            return true;
+        }
+        else {
+            messageElem.style.display = "block";
+            messageElem.innerHTML = responseJSON.message;
+            return false;
+        }
+    } catch (ex) {
+        messageElem.style.display = "block";
+        messageElem.innerHTML = ex;
+        return true;
+    }
+}
+
+
+
+function validateSaveForm(title, artist, tempo, content) {
+    const valid = false;
+    if (!title) return { valid, message: "Title Cannot Be Empty!" };
+    if (title.length > 255) return { valid, message: "Title is Maximum 255 Characer!" };
+    if (artist.length > 255) return { valid, message: "Artist is Maximum 255 Characer!" };
+    if (tempo < 20) return { valid, message: "Tempo Must Be Greater Than 19 BPM!" };
+    if (tempo > 300) return { valid, message: "Tempo Must Be Less Than 300 BPM!" };
+    if (!validateTabFormatting(content)) return { valid, message: "Tablature Format Error!" };
+    return { valid: true }
+}
+
+
+
+async function openTabForm() {
+    const bgElem = $("#open__bg");
+    const user = $getStorage().user;
+    $("#open__tab").disabled = true;            // Disable Open Tab
+
+    bgElem.style.display = "flex";
+    const messageElem = $("#open__message");
+    messageElem.style.display = "none";
+
+    // Load User's Tabs
+    const { success, message, tabs } = await loadTabsFromDB(user._id);
+    
+    if (success) {
+        app.userTabList = tabs;
+        const tabListElem = $("#open__tab-list");
+        tabListElem.innerHTML = "";
+        tabs.forEach((tab, i) => {
+            const listItem = $append({ tag: "li", id: "tab__" + i ,parent: tabListElem });
+            listItem.addEventListener("click", e => {
+                const highlightedItems = $all("#open__tab-list li.highlight");
+                highlightedItems.forEach(h => h.classList.remove("highlight"));
+                e.target.classList.add("highlight");
+
+                $("#open__tab").disabled = false;            // Enable Open Tab
+            });
+
+            const titleArtistElem = $append({ tag: "div", parent: listItem });
+            titleArtistElem.innerHTML = tab.title + " | " + tab.artist;
+
+            const publicElem = $append({ tag: "div", parent: listItem });
+            publicElem.innerHTML = tab.isPublic ? '<i class="fa-regular fa-eye"></i>' : '<i class="fa-regular fa-eye-slash"></i>';
+            publicElem.style.color = tab.isPublic ? "deeppink" : "aqua";
+
+            const difficultyElem = $append({ tag: "div", parent: listItem });
+            const colors = ["aqua", "aqua", "springgreen", "springgreen", "yellow", "yellow", "orange", "orange", "deeppink", "deeppink"];
+            for (let i = 0; i < 10; i++) {
+                const line = $append({ tag: "div", className: "line", parent: difficultyElem });
+                line.style.backgroundColor = colors[i];
+                if (tab.difficulty > i) line.classList.add("highlight");
+            }
+
+            const dateElem = $append({ tag: "div", parent: listItem });
+            const pad = n => n < 10 ? "0" + n : n;
+            const date = new Date(tab.updated)
+            const year = date.getFullYear();
+            const month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][date.getMonth()];
+            const day = pad(date.getDate());
+            const dayName = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][date.getDay()];
+            const hour = pad(date.getHours());
+            const min = pad(date.getMinutes());
+            const formattedDate = `${ day }.${ month }.${ year } ${ dayName } ${ hour }:${ min }`;
+            dateElem.innerHTML = formattedDate;
+        });
+    } else {
+        messageElem.style.display = "block";
+        messageElem.innerHTML = message;
+    }
+}
+
+
+
+function closeOpenTabForm() {
+    const bgElem = $("#open__bg");
+    bgElem.style.display = "none";
+    const messageElem = $("#open__message");
+    messageElem.style.display = "none";
+}
+
+
+
+async function loadTabsFromDB(userID) {
+    try {
+        const options = {
+            method: 'GET',
+            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' }
+        };
+
+        const URL = "http://localhost:5000/api/tabs/user/" + userID;
+        const response = await fetch(URL, options);
+        console.log(response)
+        const { success, message, tabs } = await response.json();
+        return { success, message, tabs }
+    } catch (ex) { return { success: false, message: ex }; }
+}
+
+
+
+async function openTablature() {
+    const messageElem = $("#open__message");
+    const highlightedItems = $all("#open__tab-list li.highlight");
+    highlightedItems.forEach(h => h.classList.remove("highlight"));
+    if (highlightedItems.length) {
+        const tabIndex = Number(highlightedItems[0].id.match(/tab__\d+/g)[0].replace("tab__", ""));
+        const tabToOpen = app.userTabList[tabIndex]._id;
+        
+        const { success, message, tab } = await loadTabWithIDFromDB(tabToOpen);
+        if (success) {
+            try {
+                tab.bars = JSON.parse(tab.content);
+                tab.band = tab.artist;
+                const isValid = validateTabFormatting(tab);
+                if (isValid) {
+                    app.tab = tab;
+                    closeOpenTabForm();
+                    start();
+                }
+            } catch(ex) {
+                messageElem.style.display = "block";
+                messageElem.innerHTML = "Compromised Tab Content Format!";    
+                console.log(ex)
+            }
+        } 
+        else {
+            messageElem.style.display = "block";
+            messageElem.innerHTML = message;
+        }
+        
+    }
+}
+
+
+
+async function loadTabWithIDFromDB(tabID) {
+    try {
+        const options = {
+            method: 'GET',
+            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' }
+        };
+
+        const URL = "http://localhost:5000/api/tabs/" + tabID;
+        const response = await fetch(URL, options);
+        const { success, message, tab } = await response.json();
+        return { success, message, tab }
+    } catch (ex) { return { success: false, message: ex }; }
+}
+
+
+
+
+async function deleteTab() {
+    // Find If Tab With Title and UserID Exist
+    const user = $getStorage().user;
+    if (!user._id) return console.log("No User ID Found!");
+
+    const { success, message, tabs } = await loadTabsFromDB(user._id);
+    let savedTab;
+
+    if (success) {
+        savedTab = tabs.find(t => t.title === app.tab.title);
+        if (savedTab) {
+            // Delete Tab If Title Found in DB
+            // Clear Tab Sheet If Title Is Not Found In DB
+            const headerText = "Delete Tab Sheet From Database";
+            const content = "You have a saved tab with the title: " + app.tab.title + ". Would you like to permanently delete it from our database?";
+            const color = "springgreen";
+            const actionButtons = [
+                { text: "Cancel" },
+                { text: "OK", color, callback: async () => {
+                    $("body").removeChild($(".message"));
+                    const { success, message } = await deleteTabFromDB(savedTab._id);
+                    if (success) {
+                        $fullScreenMessage({ 
+                            headerText: "Tab Successfully Deleted",
+                            content: app.title, 
+                            actionButtons: [{ text: "OK", color }]
+                        });                   
+                        app.tab = {
+                            title: "Untitled",
+                            band: "No Band",
+                            tempo: 120,
+                            bars: [[]]
+                        };
+                        start();
+                    }
+                    else {
+                        $fullScreenMessage({ 
+                            headerText: "Delete Error",
+                            content: message,
+                            actionButtons: [{ text: "OK", color }]
+                        });                   
+                    }
+                } },
+            ];
+            $fullScreenMessage({ headerText, content, actionButtons });       
+        }
+        else {
+            // Clear Tab Sheet If Title Is Not Found In DB
+            const headerText = "Clear Tab Sheet";
+            const content = "Your unsaved changes will be lost!";
+            const color = "springgreen";
+            const actionButtons = [
+                { text: "Cancel" },
+                { text: "OK", color, callback: () => {
+                    app.tab = {
+                        title: "Untitled",
+                        band: "No Band",
+                        tempo: 120,
+                        bars: [[]]
+                    };
+                    start();
+                    $("body").removeChild($(".message"));
+                } },
+            ];
+            $fullScreenMessage({ headerText, content, actionButtons });       
+        }
+    }
+}
+
+
+
+async function deleteTabFromDB(id) {
+    try {
+        const options = {
+            method: 'DELETE',
+            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' }
+        };
+
+        const URL = "http://localhost:5000/api/tabs/" + id;
+        const response = await fetch(URL, options);
+        const { success, message } = await response.json();
+        return { success, message }
+    } catch (ex) { return { success: false, message: ex }; }
+}
+
+
+
+const placeholderForUnfinalised = '<i class="fa-solid fa-star"></i>';
+function record() {
+    app.isRecordAllowed = !app.isRecordAllowed;
+
+    const light = $("#record-btn-switch-light");
+    const recordBtn = $("#record");
+    if (app.isRecordAllowed) {
+        const metronomeAudio = new Howl({ src: ["../../sounds/metronome.mp3"] }); // Get Metronome Audio
+        if (!app.metronomeAudio) app.metronomeAudio = metronomeAudio;  // Set Metronome Audio If Not Set Yet
+        
+        light.classList.add("active");
+    }
+    else {
+        light.classList.remove("active");
+    }
+}
+
+
+function handleStrumActivated(event, strum) {
+    if (!app.isRecordAllowed) return;
+    const guitarNotes = ["E2", "F2", "Fs2", "G2", "Gs2", "A2", "As2", "B2", "C3", "Cs3", "D3", "Ds3", "E3", "F3", "Fs3", "G3", "Gs3", "A3", "As3", "B3", "C4", "Cs4", "D4", "Ds4", "E4", "F4", "Fs4", "G4", "Gs4", "A4", "As4", "B4", "C5", "Cs5", "D5", "Ds5", "E5", "F5", "Fs5", "G5", "Gs5", "A5", "As5", "B5", "C6"];
+    const strumOffsets = [0, 5, 10, 15, 19, 24];
+    const positions = app.controllerState.highestFretPositions[strum - 1];  // Finger Positions on a String Row
+    const upperMost =  positions[positions.length - 1];                     // Topmost Pressed Position
+    
+    const note = guitarNotes[strumOffsets[strum - 1] + upperMost];          // Note Name that Plays
+
+    if (event !== 0) {                                                      // Strum Pressed  
+        finaliseNote(strum);
+    }
+    else {                                                                  // Strum Released
+        // Save Note Produced by the Controller
+        placeUnfinalisedNoteOnTab(app.barIndex, app.noteIndex, upperMost, strum);
+    }
+}
+
+
+function handleFretActivated(event, fret, string) {
+    if (!app.isRecordAllowed) return;
+    finaliseNote(string);
+}
+
+
+
+// Create a Note and Paste it in the Tab
+// An Unfinalised Note Will Hold Information about Its Starting Bar Index
+// Initial Bar and Note Position is Stored in the Chord Name Placeholder
+function placeUnfinalisedNoteOnTab(barIndex, noteIndex, upperMostFret, strum) {
+    const string = "EADGBe"[strum - 1];
+
+    // Find Out If Note Exists on the Note String Index Positon
+    const bar = app.tab.bars[barIndex];
+    let existNoteIndex = false; 
+    for (let i = 0; i < bar.length; i++) {
+        const [ n, s ] = bar[i].split(":");
+        if (Number(s) === noteIndex) { existNoteIndex = true; break; }
+    }
+    
+    // Condense Notes with the Same Start Position
+    if (existNoteIndex) {
+        for (let i = 0; i < bar.length; i++) {
+            const [ n, s, d, c ] = bar[i].split(":");
+            if (Number(s) === noteIndex) {
+                // Dissect Note to Separate Strings to Find If Duplicate
+                const strings = n.split(",").map(s => s.replace(/\d+/g, ""));
+
+                if (strings.includes(string)) {
+                    finaliseNote(strum);
+                    break;
+                }
+            
+                // New Condensed Note
+                const condensed = `${ n },${ string }${ upperMostFret }:${ s }:${ d }:${ c }`;
+                app.tab.bars[barIndex][i] = condensed;
+            }
+        }
+    } else {
+        const duration = "W";                                                  // Initial Duration is a Whole Note
+        const noteStr = `${ string }${ upperMostFret }:${ noteIndex }:${ duration }:${ placeholderForUnfinalised }`; // Create the Note String
+        const unfinalised = `${ string }${ upperMostFret }:${ noteIndex }:${ duration }:${ barIndex }`; // Create the Note String
+    
+        // Paste Note in Tab
+        app.tab.bars[barIndex].push(noteStr);
+        app.unfinalisedNotes.push(unfinalised);    
+
+        // Finalise Note After a Certain Time
+        const longestNoteIn32s = 49;                               // Whole 32 + half 16 + 1 (Safety)
+        const removeTime = getGameLoopIntervalsInMS() * longestNoteIn32s;          // Longest Possible Note
+        const removeTimeout = setTimeout(() => removeWithLongestDuration(unfinalised, removeTimeout), removeTime);
+    }    
+
+    function removeWithLongestDuration(unfinalisedNoteStr, timeout) {
+        const [ _, start, __, barIndex ] = unfinalisedNoteStr.split(":");
+        const index = app.unfinalisedNotes.findIndex(n => n === unfinalisedNoteStr);
+        if (index !== -1) {
+            app.unfinalisedNotes.splice(index, 1);                         // Remove from Unfinalised Note Store
+            const bar = app.tab.bars[barIndex];
+            
+            for (let i = 0; i < bar.length; i++) {
+                const curr_n = bar[i];
+                const [ n, s, _, __ ] = curr_n.split(":");                  // Notes, Start, Duration, Chord Name
+                const finalised = `${ n }:${ s }:W..`;                     // The Longest Possible Note
+                
+                // Finalise Note
+                if (s === start) app.tab.bars[barIndex][i] = finalised;
+                centerCurrentBarInTab(app.tab.bars[barIndex]);
+            }
+        }
+        clearTimeout(timeout);
+    }
+    centerCurrentBarInTab();
+}
+
+
+
+const durationsInUnits = [
+    { name: "W..", duration: 32 + 16 + 8 },
+    { name: "W.", duration: 32 + 16 },
+    { name: "W", duration: 32 },
+    { name: "H..", duration: 16 + 8 + 4 },
+    { name: "H.", duration: 16 + 8 },
+    { name: "H", duration: 16 },
+    { name: "Q..", duration: 8 + 4 + 2 },
+    { name: "Q.", duration: 8 + 4 },
+    { name: "Q", duration: 8 },
+    { name: "E..", duration: 4 + 2 + 1 },
+    { name: "E.", duration: 4 + 2 },
+    { name: "E", duration: 4 },
+    { name: "X..", duration: 3.5 },
+    { name: "X.", duration: 3 },
+    { name: "X", duration: 2 },
+    { name: "T..", duration: 1.75 },
+    { name: "T.", duration: 1.5 },
+    { name: "T", duration: 1 },
+]
+
+function calculateDuration(startBarI, startNoteI, endBarI, endNoteI) {  
+    const units = 32;                                              // Maximum Unit is 1 / 32nd Note
+    const absStart = startBarI * units + startNoteI;
+    const absEnd = endBarI * units + endNoteI;
+    const diffInUnits = absEnd - absStart;
+    
+    // Find Closest Duration Units
+    let closest = 10000;
+    let closestUnit = durationsInUnits[0];
+    durationsInUnits.forEach(durationUnit => {
+        const bigger = Math.max(durationUnit.duration, diffInUnits);
+        const smaller = Math.min(durationUnit.duration, diffInUnits);
+        const diff = bigger - smaller;
+        if (diff < closest) {
+            closest = diff;
+            closestUnit = durationUnit;
+        };
+    });
+    return closestUnit;
+}
+
+
+
+function finaliseNote(strum) {
+    // Get Which Strings Need Finalisation
+    const string = "EADGBe"[strum - 1];
+    const notesToFinalise = [];
+    const indices = [];
+
+    // Find Strums from Unfinalised Ones
+    app.unfinalisedNotes.forEach(noteStr => {
+        const [ n, _, __, inds ] = noteStr.split(":");
+        const str = n.split(",").map(x => x.replace(/\d+/g, ""));
+        if (str.includes(string)) {
+            notesToFinalise.push(noteStr);
+            indices.push(inds);
+        }
+    });
+
+    // Take of Strums from Unfinalised Ones
+    notesToFinalise.forEach(n => {
+        const index = app.unfinalisedNotes.findIndex(u => u === n);
+        app.unfinalisedNotes.splice(index, 1);
+    });
+
+    app.tab.bars.forEach((bar, barIndex) => {
+        bar.forEach((noteStr, noteIndex) => {
+            const [ n, s, d, c ] = noteStr.split(":");
+            const str = n.split(",").map(x => x.replace(/\d+/g, ""));
+            if (str.includes(string)) {
+                if (c === placeholderForUnfinalised) {
+                    const duration = calculateDuration(barIndex, Number(s), app.barIndex, app.noteIndex);
+                    const newString = `${ n }:${ s }:${ duration.name }`;
+                    app.tab.bars[barIndex][noteIndex] = newString;
+                    centerCurrentBarInTab(app.tab.bars[barIndex]);
+                }
+            }
+        }); 
+    });
 }
