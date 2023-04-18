@@ -16,21 +16,15 @@ router.get("/:id", auth, async(req, res) => {                      // GET: ID (G
     const messageID = `Couldn't Cast ${ id } to DB _id`;           // ID Cast Error Message
     const jsonCastErr = { success: false, error: messageID };      // JSON Cast Error Object
     if (!isValidID) return res.status(400).json(jsonCastErr);      // Return 400 ID Cast Error
-
-    // Find User
-    const user = await User.findById(id);
-    const noUserMsg = `Couldn't Find User with ID: ${ id }`;       // No User Message
-    const noUserJson = { success: false, message: noUserMsg };     // No User Message
-    if (!user) return res.status(404).json(noUserJson);            // Return 404 No User Found
     
     // Find If Profile Exists with IserID
-    const profile = await Profile.find({ userID: id });            // Get Profile by UserID
-    const profMsg = `Could Not Find Profile with UserID: ${ id }`; // Profile Exists Message
+    const profile = await Profile.findById(id);                    // Get Profile by UserID
+    const profMsg = `Could Not Find Profile with ID: ${ id }`;     // Profile Exists Message
     const profJson = { success: false, message: profMsg };         // Profile Exists Message
-    if (!profile.length) return res.status(403).json(profJson);    // Return 404 Resource Not Found
+    if (!profile) return res.status(403).json(profJson);           // Return 404 Resource Not Found
 
     // Find User Profile
-    res.status(200).json({ success: true, user });                 // Return 200 Success
+    res.status(200).json({ success: true, profile });              // Return 200 Success
 });
 
 

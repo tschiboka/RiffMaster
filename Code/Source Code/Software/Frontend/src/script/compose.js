@@ -190,6 +190,8 @@ function start() {
     displayNotesOnTab(app.tab.bars);                               // Display Notes on the Tab Sheet (from Bar 0)
     tab = undefined;
     
+    // Reset Game Loop Timer
+    if (app.gameLoopTimer) clearInterval(app.gameLoopTimer);
     const gameLoopTimer = setInterval(gameLoop, getGameLoopIntervalsInMS()); // Create a Game Loop Interval Function
     app.gameLoopTimer = gameLoopTimer;                             // Globally Available Game Loop Timer
 
@@ -197,6 +199,7 @@ function start() {
     if (app.barIndex < 0) backButtons.forEach(b => b.disabled = true);
 
     updateTabIndexInfo();
+    
 }
 
 
@@ -1311,6 +1314,7 @@ async function openTablature() {
                 const isValid = validateTabFormatting(tab);
                 if (isValid) {
                     app.tab = tab;
+                    console.log(app.tab);
                     closeOpenTabForm();
                     start();
                 }
@@ -1324,7 +1328,6 @@ async function openTablature() {
             messageElem.style.display = "block";
             messageElem.innerHTML = message;
         }
-        
     }
 }
 

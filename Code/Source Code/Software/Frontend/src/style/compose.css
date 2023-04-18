@@ -336,6 +336,10 @@ h2 button:last-child {
     cursor: default;
 }
 
+.beat:nth-child(1), .beat:nth-child(9), .beat:nth-child(17), .beat:nth-child(25) {
+    color: #444;
+}
+
 .beat.hasnote {
     color: white !important;
     font-family: monospace;
