@@ -43,7 +43,7 @@ function handleStrumActivated(event, strum) {
     const upperMost =  positions[positions.length - 1];                     // Topmost Pressed Position
     
     const note = guitarNotes[strumOffsets[strum - 1] + upperMost];          // Note Name that Plays
-
+    
     if (event !== 0) {                                                      // Strum Pressed  
         const notesOnString = positions                                     // Find Strings Currently Playing
             .map(position => guitarNotes[strumOffsets[strum - 1] + position]);   
@@ -54,6 +54,7 @@ function handleStrumActivated(event, strum) {
         displayActionOnBoard(upperMost, strum, strum, !event);              // Highlight Played Note and String
     }
     else {                                                                  // Strum Released
+        if (upperMost === undefined) return;
         playNote(note, strum);
         if (upperMost !== 0) {                                              // If Finger Position is Not 0
             displayActionOnBoard(upperMost, strum, -1, false);              // Put Back Semi Highlight
@@ -67,6 +68,7 @@ function handleStrumActivated(event, strum) {
 
 
 function handleFretActivated(event, fret, string) {
+    if (!fret) return;
     displayActionOnBoard(fret, string, -1, !event);
     
     if (event === 0) {                                                      // If Finger is Off Position 

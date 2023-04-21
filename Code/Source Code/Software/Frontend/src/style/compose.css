@@ -368,7 +368,7 @@ button:disabled {
     display: inline;
 }
 
-button#pause:disabled, button#play:disabled {
+button#pause:disabled, button#play:disabledm {
     display: none;
 }
 

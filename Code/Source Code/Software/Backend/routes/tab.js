@@ -14,14 +14,13 @@ router.get("/", async (req, res) => {                               // GET: ALL
 
 
 router.get("/:id", async (req, res) => {                           // GET: ID
-    console.log("GET")
     // Validate ID
     const id = req.params.id;                                      // Id Parameter
     const isValidID = mongoose.Types.ObjectId.isValid(id);         // Validate ID Casting
     const messageID = `Couldn't Cast ${ id } to DB _id`;           // ID Cast Error Message
     const jsonCastErr = { success: false, error: messageID };      // JSON Cast Error Object
     if (!isValidID) return res.status(400).json(jsonCastErr);      // Return 400 ID Cast Error
-
+    
     // Find Tab
     const tab = await Tab.findById(id);                            // Get Tab
     const noTabMsg = `Couldn't Find Tab with ID: ${ id }`;         // No Tab Message

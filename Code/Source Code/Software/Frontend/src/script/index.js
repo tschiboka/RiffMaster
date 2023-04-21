@@ -12,9 +12,13 @@ function validateCredentials() {
 
 async function start() {
     validateCredentials();
-    const profileResponse = await getProfile();
-    profile = profileResponse.profile;
+
+    // Set Profile
+    profile = await getProfile();
     
+    // Get Publicly Available Tabs
+    const tabs = await getPublicTabs();
+    console.log(tabs);
     setProfileInfo();
 }
 
@@ -29,11 +33,25 @@ async function getProfile() {
         }
         const result = await fetch(url, option);
         const json = await result.json();
-        return json;
+        return json.profile;
     }
-    catch (err) {
-        console.log(err);
+    catch (err) { console.log(err); }
+}
+
+async function getPublicTabs() {
+    try {
+        const url = "http://localhost:5000/api/tabs";
+        const option = {
+            "method": "GET",
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "headers": { "x-auth-token": token }
+        }
+        const result = await fetch(url, option);
+        const json = await result.json();
+        return json.tabs.filter(tab => tab.isPublic);
     }
+    catch (err) { console.log(err); }
 }
 
 function setProfileInfo() {

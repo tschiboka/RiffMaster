@@ -630,7 +630,7 @@ function editBeat(event) {
     input_D.value = beatInfo.stringValues["D"] ? beatInfo.stringValues["D"] : "";
     input_G.value = beatInfo.stringValues["G"] ? beatInfo.stringValues["G"] : "";
     input_B.value = beatInfo.stringValues["B"] ? beatInfo.stringValues["B"] : "";
-    input_e.value = beatInfo.stringValues["e"] ? beatInfo.stringValues["E"] : "";
+    input_e.value = beatInfo.stringValues["e"] ? beatInfo.stringValues["e"] : "";
 
     // Note Durations
     const durationInputs = $append({ tag: "fieldset", id: "duration-inputs", parent: form });
@@ -1290,7 +1290,6 @@ async function loadTabsFromDB(userID) {
 
         const URL = "http://localhost:5000/api/tabs/user/" + userID;
         const response = await fetch(URL, options);
-        console.log(response)
         const { success, message, tabs } = await response.json();
         return { success, message, tabs }
     } catch (ex) { return { success: false, message: ex }; }
@@ -1321,7 +1320,6 @@ async function openTablature() {
             } catch(ex) {
                 messageElem.style.display = "block";
                 messageElem.innerHTML = "Compromised Tab Content Format!";    
-                console.log(ex)
             }
         } 
         else {
@@ -1445,7 +1443,7 @@ function record() {
     const recordBtn = $("#record");
     if (app.isRecordAllowed) {
         const metronomeAudio = new Howl({ src: ["../../sounds/metronome.mp3"] }); // Get Metronome Audio
-        if (!app.metronomeAudio) app.metronomeAudio = metronomeAudio;  // Set Metronome Audio If Not Set Yet
+        if (!app.metronomeAudio) app.metronomeAudio = metronomeAudio;       // Set Metronome Audio If Not Set Yet
         
         light.classList.add("active");
     }
@@ -1456,17 +1454,11 @@ function record() {
 
 
 function handleStrumActivated(event, strum) {
-    if (!app.isRecordAllowed) return;
-    const guitarNotes = ["E2", "F2", "Fs2", "G2", "Gs2", "A2", "As2", "B2", "C3", "Cs3", "D3", "Ds3", "E3", "F3", "Fs3", "G3", "Gs3", "A3", "As3", "B3", "C4", "Cs4", "D4", "Ds4", "E4", "F4", "Fs4", "G4", "Gs4", "A4", "As4", "B4", "C5", "Cs5", "D5", "Ds5", "E5", "F5", "Fs5", "G5", "Gs5", "A5", "As5", "B5", "C6"];
-    const strumOffsets = [0, 5, 10, 15, 19, 24];
+    if (!app.isRecordAllowed) return;                                       // Return If Not Recording
     const positions = app.controllerState.highestFretPositions[strum - 1];  // Finger Positions on a String Row
-    const upperMost =  positions[positions.length - 1];                     // Topmost Pressed Position
+    const upperMost = positions[positions.length - 1];                      // Topmost Pressed Position
     
-    const note = guitarNotes[strumOffsets[strum - 1] + upperMost];          // Note Name that Plays
-
-    if (event !== 0) {                                                      // Strum Pressed  
-        finaliseNote(strum);
-    }
+    if (event === 1) finaliseNote(strum);                                   // Strum Pressed 
     else {                                                                  // Strum Released
         // Save Note Produced by the Controller
         placeUnfinalisedNoteOnTab(app.barIndex, app.noteIndex, upperMost, strum);
@@ -1474,9 +1466,9 @@ function handleStrumActivated(event, strum) {
 }
 
 
-function handleFretActivated(event, fret, string) {
-    if (!app.isRecordAllowed) return;
-    finaliseNote(string);
+function handleFretActivated(string) {                                      // Changes on the Strings Fret Would Finalise the Note
+    if (!app.isRecordAllowed) return;                                       // Return If Not Recording
+    finaliseNote(string);                                                   
 }
 
 
@@ -1485,23 +1477,23 @@ function handleFretActivated(event, fret, string) {
 // An Unfinalised Note Will Hold Information about Its Starting Bar Index
 // Initial Bar and Note Position is Stored in the Chord Name Placeholder
 function placeUnfinalisedNoteOnTab(barIndex, noteIndex, upperMostFret, strum) {
-    const string = "EADGBe"[strum - 1];
+    console.log(barIndex, noteIndex, upperMostFret, strum)
+    const string = "EADGBe"[strum - 1];                                     // Find String
 
     // Find Out If Note Exists on the Note String Index Positon
-    const bar = app.tab.bars[barIndex];
+    const bar = app.tab.bars[barIndex];                                     // Get Bar
     let existNoteIndex = false; 
-    for (let i = 0; i < bar.length; i++) {
-        const [ n, s ] = bar[i].split(":");
-        if (Number(s) === noteIndex) { existNoteIndex = true; break; }
+    for (let i = 0; i < bar.length; i++) {                                  // Iterate Bar
+        const [ _, s ] = bar[i].split(":");                                 // Extract String
+        if (Number(s) === noteIndex) { existNoteIndex = true; break; }      // If Found Set Note Exist True
     }
     
     // Condense Notes with the Same Start Position
-    if (existNoteIndex) {
-        for (let i = 0; i < bar.length; i++) {
-            const [ n, s, d, c ] = bar[i].split(":");
-            if (Number(s) === noteIndex) {
-                // Dissect Note to Separate Strings to Find If Duplicate
-                const strings = n.split(",").map(s => s.replace(/\d+/g, ""));
+    if (existNoteIndex) {                                                   // If Note Exists on the String
+        for (let i = 0; i < bar.length; i++) {                              // Iterate Bar
+            const [ n, s, d, c ] = bar[i].split(":");                       // Extract Note, String, Duration and Chord Name
+            if (Number(s) === noteIndex) {                                  // If String Found on Note Index
+                const strings = n.split(",").map(s => s.replace(/\d+/g, "")); // Dissect Note to Separate Strings to Find If Duplicate
 
                 if (strings.includes(string)) {
                     finaliseNote(strum);

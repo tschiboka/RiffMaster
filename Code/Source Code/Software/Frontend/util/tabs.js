@@ -123,12 +123,12 @@ function displayTabSheet(tab, rows = 1, editable = false) {
     const tabSheet = $("#tab-sheet");                              // Get Tab Sheet Element
     tabSheet.innerHTML = "";
     
+
     for (let row = 0; row < rows; row++) {                         // Number of Bar Rows (Default 1)
         // Adjust Bar Width to Screen
         const staff = $append({ tag: "div", className: "staff", parent: tabSheet });  // Add Staff Element (Horizontal Separator Bar)
         const { barsInTabLine, barWidth } = getBarMeasurements();  // Get How Many Bars Can Fit Screen and Staff Width
         if (barsInTabLine === 0) throw Error("No Space to Display Tab"); // Error If No Space for Bars
-
         // Fill Up Staff with Bars
         for (let bar = 0; bar < barsInTabLine; bar++) {            // Iterate Bar Spaces
             const id = `row${ row }-bar${ bar }`;                  // Create ID String
@@ -197,19 +197,19 @@ function displayNotesOnTab(bars, from = 0) {
     // Measure Note Width to Adjust Chords and Timings
     const { _, barWidth } = getBarMeasurements();                  // Get Bar Width
     const chordFontSize = barWidth / 32;                           // Set Chord Font Size
-
+    
     // Iterate Bars
     if (from < 0) from = 0;                                        // Do Not Let From Negative Index
     for (let bar_i = from; bar_i < bars.length; bar_i++) {         // Cycle Through Bars From the Given Bar Index
         const rowNum = Math.floor((bar_i - from) / app.barsInTabLine);  // Calculate Row (Staff)
         const barNum = (bar_i - from) % app.barsInTabLine;         // Calculate Bar
         if ((bar_i - from) >= app.barsInTabLine * app.staffNum) return; // Stop When Run Out of Bars
-
+        
         // Set Bar Chords Div
         const bar = bars[bar_i];                                   // Get Current Bar
         const barChordsDiv = $(`#row${ rowNum }-bar${ barNum }-super`); // Get Bar Chords Div (Above Staff)
         barChordsDiv.innerHTML = "";                               // Clear Previous Chords
-
+        
         
         // Set Bar Number
         const absoluteBarNum = rowNum * app.barsInTabLine + barNum + from + 1; // Calculate the Displayed Bar Number
@@ -220,7 +220,7 @@ function displayNotesOnTab(bars, from = 0) {
         for (let beat_i = 0; beat_i < bar.length; beat_i++) {      // Traverse Each Note in a Bar
             const noteItem = bar[beat_i];                          // Get the Note from the Bar
             const [ notesStr, start, duration, chordName ] = [...noteItem.split(":")]; // Deconstruct Note and Get Details
-
+            
             
             // Place Note
             notesStr.split(",").map(note => {                      // Iterate Note String (Each May Have Multiple Individual Notes Eg.: E0A2 is Note E0 and Note A2)
@@ -233,7 +233,7 @@ function displayNotesOnTab(bars, from = 0) {
                 else noteElem.classList.add("hasnote");            // Add HASNOTE Class to Note Element
                 noteElem.innerHTML = fret;                         // Add the Corresponing Fret Number
             });
-
+            
             // Add Chord Name
             if (chordName) {                                       // If Note Has a Chord Name Provided
                 const chordTextElem = $append({ tag: "div", className: "bar-chord-txt", parent: barChordsDiv }); // Create Chord Name Element
@@ -241,7 +241,7 @@ function displayNotesOnTab(bars, from = 0) {
                 chordTextElem.style.left = start * barWidth / 32 + 2 + "px"; // Set Left Position
                 chordTextElem.style.fontSize = chordFontSize;      // Set Font Size
             }
-
+            
             // Add Beat Duration
             const durationID = `#row${ rowNum }-bar${ barNum }-duration${ start }`; // Create the Note Duration ID
             const durationDiv = $(durationID);                     // Get Duration Element

@@ -39,6 +39,7 @@ const byte GRE_LED = 12;                                             // Green LE
 const byte RED_LED = 11;                                             // Red LED Pin (USB On)                                
 const byte TOG_IN  = 10;                                             // Toggle Switch Input Pin
 const byte TOG_OUT = 9;                                              // Toggle Switch Output Pin
+const int maxAllowedDebounceTime = 20;                               // Set the Debounce Time to Prevent Uninitiated Button Presses
 
 
 
@@ -60,15 +61,25 @@ bool oldFretState[ROW_LEN][COL_LEN] = {                              // Store Ol
     { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
     { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
 };
+unsigned long debounceFret[ROW_LEN][COL_LEN] = {                     // Store Last Message Sending Time for Debounce Control
+    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+};
 
 // Right Hand States
 bool newStrumState[6] = { 1, 1, 1, 1, 1, 1 };                        // State of Strum String Switches
 bool oldStrumState[6] = { 1, 1, 1, 1, 1, 1 };                        // Store Old State to Compare to New in Every Loop
+unsigned long debounceStrum[6] = { 0, 0, 0, 0, 0, 0 };               // Store Last Message Sending Time for Debounce Control
 
 // Controller Body Displays
 bool onConnected = 1;                                                // USB Cable Powered the Device        |  LED-Red
 bool onState = 0;                                                    // Indicates If Device Switch is ON    |  LED-Green
 bool transactionState = 0;                                           // USB Communication Activity          |  LED-Blue
+
 
 
 
@@ -214,32 +225,43 @@ bool getStrumStateChanged() {
 
 // Send State Changes as Keyboard Events
 void sendState() {
+    const unsigned long currentTime = millis();                      // Get the Current Time
     // Read Fret State
     for (byte ri = 0; ri < ROW_LEN; ri++) {                          // Iterate Rows (Strings)
         for (byte ci = 0; ci < COL_LEN; ci++) {                      // Iterate Columns (Frets)
             bool oldState = oldFretState[ri][ci];                    // Get Old Fret Position
             bool newState = newFretState[ri][ci];                    // Get New Fret Position
-  
-            if (oldState != newState) {                              // If Fret State Changed
+            const unsigned long lastPressed = debounceFret[ri][ci];  // Read Last Time a Particular Fret Has Been Pressed
+            const unsigned long elapsedTime =  currentTime - lastPressed; // Calculate Elapsed Time   
+            if (oldState != newState) {
+                debounceFret[ri][ci] =  currentTime;                 // Register Fret Interaction Time for Debounce If State Changes
+                if (elapsedTime > maxAllowedDebounceTime) {          // Send Keyboard Presses
                 bool event = !newState;                              // Negate Pressed State to get HIGH = 1 and LOW = 0
                 int fret = ci + 1;                                   // Add One as Frets are Numbered from 1 - 20
-                int string = ri + 1;                                 // Add One as Strings are Numbered from 1 - 6
-
-                Keyboard.print(event);
+                int string = ri + 1;                                 // Add One as Strings are Numbered from 1 - 
+                Keyboard.print(event);                               // Add Event
                 if (fret < 10) Keyboard.print("0");                  // Pad Single Digits with a 0
-                Keyboard.print(fret);
-                Keyboard.println(string);                            
-            }
+                  Keyboard.print(fret);                              // Add Fret Number
+                  Keyboard.println(string);                          // Add String Number
+                }        
+            }            
         }
     }
     
     // Read Strum State
     for (byte i = 0; i < 6; i++) {                                   // Traverse Strums
         if (oldStrumState[i] != newStrumState[i]) {                  // If Change Detected
-            bool event = !newStrumState[i];                          // Negate Pressed State to get HIGH = 1 and LOW = 0
-            Keyboard.print(event);
-            Keyboard.print("00");
-            Keyboard.println(i + 1);
+            // Debounce Control
+            const unsigned long lastChanged = debounceStrum[i];      // Read Last Message Sent on a Particular Fret 
+            const unsigned long elapsedTime = currentTime - lastChanged;// Calculate Elapsed Time   
+
+            if (elapsedTime > maxAllowedDebounceTime) {              // Act on Changes After Debounce Time
+              debounceStrum[i] = currentTime;                        // Register State Change
+              bool event = !newStrumState[i];                        // Negate Pressed State to get HIGH = 1 and LOW = 0
+              Keyboard.print(event);                                 // Add Event
+              Keyboard.print("00");                                  // Double Zero For Fret Number
+              Keyboard.println(i + 1);                               // Add String Number
+            } 
         }
     }
 }

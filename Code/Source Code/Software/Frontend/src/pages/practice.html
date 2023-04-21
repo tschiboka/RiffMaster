@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/d5efc64c80.js" crossorigin="anonymous"></script>
+    <link rel="icon" type="image/x-icon" href="../../images/favicon.png">
+    <link rel="stylesheet" href="../style/practice.css">
+    <script src="../../util/misc.js"></script>
+    <script src="../../util/controller.js"></script>
+    <script src="../../util/tabs.js"></script>
+    <title>RiffMaster | Practice</title>
+</head>
+
+<body onload="start()">
+    <header>
+        <h1>Practice</h1>
+        <div class="track-info">Test Tablature</div>
+    </header>
+
+    <main>
+        <div id="tab-sheet"></div>
+        <div id="note-track"></div>
+        <div id="guitar"></div>
+    </main>
+
+    <footer>
+        <button id="play" onclick="play()">
+            <i class="fa-solid fa-play"></i>
+        </button>
+        <button id="pause" onclick="play(true)">
+            <i class="fa-solid fa-pause"></i>
+        </button>
+        <button id="stop" onclick="stopPlaying()">
+            <i class="fa-solid fa-square"></i>
+        </button>
+    </footer>
+</body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js" integrity="sha512-6+YN/9o9BWrk6wSfGxQGpt3EUK6XeHi6yeHV+TYD2GR0Sj/cggRpXr1BrAQf0as6XslxomMUxXp2vIl+fv0QRA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="../script/practice.js"></script>
+
+<!-- Add Controller Functionalities -->
+<script>
+    const body = document.getElementsByTagName("body")[0];
+    window.addEventListener("keydown", controllerListener);
+    window.addEventListener("keyup", controllerListener);
+</script>
+
+</html>
