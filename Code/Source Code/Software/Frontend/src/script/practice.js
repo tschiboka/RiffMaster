@@ -31,7 +31,6 @@ async function start() {
     displayTabSheet(app.tab.bars);
     displayNotesOnTab(app.tab.bars);
     createNoteTrack(app.noteTrack);
-    transformBars(app.tab.bars);
     createGuitar();                                                // Create Guitar Simulator Board
     getDOMElements();                                              // Load DOM Elements
     placeNotesOnTrack(app.tab.bars, app.noteTrack);
@@ -154,6 +153,8 @@ function gameLoop() {                                              // Run on Eve
             highlightCurrentBar();                                 // Highlight Current Bar
         }
         highlightCurrentNotes();
+        placeNotesOnTrack(app.tab.bars, app.noteTrack);
+        scoreBeat();
         
         // Play Tab Notes
         const bar = app.tab.bars[app.barIndex];
@@ -183,6 +184,14 @@ function play(pause = false) {
     const pauseBtn = $("#pause");                                  // Get Pause Button
 
     if (!pause) {                                                  // If Game is Not Paused
+        let countDownState = 3;
+        const countDownTimer = setInterval(() => {
+            if (countDownState > 0) console.log(countDownState--);
+            else {
+                clearInterval(countDownTimer);
+            }
+        }, 1000);
+        
         app.play = true;                                           // Set Play
         playBtn.disabled = true;                                   // Disable Play Button
         pauseBtn.disabled = false;                                 // Enable Pause Button
@@ -208,7 +217,8 @@ function stopPlaying() {
     centerCurrentBarInTab();
     highlightCurrentBar();                                 // Highlight Current Bar
     highlightCurrentNotes();
-    updateTabIndexInfo();
+    createNoteTrack(app.noteTrack);
+    placeNotesOnTrack(app.tab.bars, app.noteTrack);
 }
 
 
@@ -321,49 +331,150 @@ function createNoteTrack(noteTrack) {
 */
  
 function transformBars(bars) {
+    const durationsInUnits = [
+        { name: "W..", duration: 32 + 16 + 8 },
+        { name: "W.", duration: 32 + 16 },
+        { name: "W", duration: 32 },
+        { name: "H..", duration: 16 + 8 + 4 },
+        { name: "H.", duration: 16 + 8 },
+        { name: "H", duration: 16 },
+        { name: "Q..", duration: 8 + 4 + 2 },
+        { name: "Q.", duration: 8 + 4 },
+        { name: "Q", duration: 8 },
+        { name: "E..", duration: 4 + 2 + 1 },
+        { name: "E.", duration: 4 + 2 },
+        { name: "E", duration: 4 },
+        { name: "X..", duration: 4 },
+        { name: "X.", duration: 3 },
+        { name: "X", duration: 2 },
+        { name: "T..", duration: 2 },
+        { name: "T.", duration: 1 },
+        { name: "T", duration: 1 },
+    ];
+    
     const transformedBars = [];
     bars.forEach(bar => {
         const barContent = new Array(32).fill(undefined);
         bar.forEach(beatContent => {
             const [ notes, beatIndex, duration, _ ] = beatContent.split(":");
+            const durationUnit = durationsInUnits.find(d => d.name === duration).duration;
             const beat = {
                 notes: notes.split(","),
-                duration: duration,
+                duration: durationUnit,
             };
             barContent[beatIndex] = beat;
         });
-        console.log(barContent);
+        transformedBars.push(barContent);
     });
+    return transformedBars;
 }
 
 
 
-function placeNotesOnTrack(barStringsArr, noteTrack) {
-    
-    // TEEEEMP
-    app.barIndex = 0;// TEEEEMP
-    app.noteIndex = 0;// TEEEEMP
 
+// Function Builds a Table from the Transformed Bar List
+// This Will be Stored in the App State for Checking If User Strummed the Right Note at the Right Time
+// And Will be Used to Create the Notes on the Note Track
+// EG: a A Minor Quarter Chord, a Quarter Rest and an E Major Quarter Chord Looks Like the Following
+// [
+//  [ 0, 0, 0, 0, 0, 0, 0, 0, , , , , , , , , 0, 0, 0, 0, 0, 0, 0, 0 ]
+//  [ 1, 1, 1, 1, 1, 1, 1, 1, , , , , , , , , 0, 0, 0, 0, 0, 0, 0, 0 ]
+//  [ 2, 2, 2, 2, 2, 2, 2, 2, , , , , , , , , 1, 1, 1, 1, 1, 1, 1, 1 ]
+//  [ 2, 2, 2, 2, 2, 2, 2, 2, , , , , , , , , 2, 2, 2, 2, 2, 2, 2, 2 ]
+//  [ 0, 0, 0, 0, 0, 0, 0, 0, , , , , , , , , 2, 2, 2, 2, 2, 2, 2, 2 ]
+//  [  ,  ,  ,  ,  ,  ,  ,  , , , , , , , , , 0, 0, 0, 0, 0, 0, 0, 0 ]
+//]
 
+function placeNotesOnTrack(unformattedBars, noteTrack) {
+    app.transformedBars = transformBars(unformattedBars);           // Transform Bar for a More Efficient Structure
+    const bars = app.transformedBars;                               // Create Short Variable to Reference it in the Fucntion
+
+    // Read Bars and Create an Empty Track Map Structure
     const STRING_NUM = noteTrack.dimensions.strings;                // Six Strings on the Guitar
     const PREV_BEATS = noteTrack.dimensions.playedNotes;            // Show a Predefined Number of Played Notes (Beats)
     const NEXT_BEATS = noteTrack.dimensions.upcomingNotes;          // Show a Predefined Number of Next Notes (Beats)
     const BEAT_NUM = 32;                                            // 32 Beats in a Bar
     const totalBeats = PREV_BEATS + 1 + NEXT_BEATS;                 // Add Current Beat to the Total
-    const { barIndex, noteIndex } = { ...app };
+    const { barIndex, noteIndex } = { ...app };                     // Extract Note and Bar Index from App State
+    const noteTrackMap = [];                                        // Create an Empty Array for the Map
+    const stringIndexMap = { E: 5, A: 4, D: 3, G: 2, B: 1, e: 0 };  // Get Index from Letters
+    for (let i = 0; i < STRING_NUM; i++) {                          // Iterate the Strings
+        noteTrackMap.push(new Array(totalBeats).fill(undefined));   // Filled with an Array of Undefined with the Length of the Track
+    }
+    
+    // Fill Up Track Map
+    for (let i = 0 - PREV_BEATS; i <= NEXT_BEATS; i++ ) {           // Iterate Relative Index Numbers From Negative EG: -50 to 50
+        const relativeBarIndex = Math.floor(i / BEAT_NUM);          // Get the Bar Index Relative to the Current Bar
+        let absoluteBarIndex = barIndex + relativeBarIndex;         // Get the Absolute Bar Indexing
+        let absoluteNoteIndex = Math.abs(i % BEAT_NUM >= 0          // Get the Absolute Index of Notes
+            ? i % BEAT_NUM                                          // Positive is the Remainder of Beat Numbers
+            : BEAT_NUM + (i % BEAT_NUM));                           // Negative Values Should Be Taken From the Back
+        absoluteNoteIndex += noteIndex;                             // Add Current Note Index to Show Note Incrementations As Well
+        if (absoluteNoteIndex >= BEAT_NUM) {                        // Do Not Let Array Out of Boundaries
+            absoluteNoteIndex -= BEAT_NUM;                          // Correct Note Indexing If Over Boundary
+            absoluteBarIndex++;                                     // Incerment Barindex to Get the Correct Note
+        }
+        if (absoluteBarIndex < 0 || absoluteBarIndex > bars.length - 1) continue; // Absolute Bar Index Must Be Positive
+        const beat = bars[absoluteBarIndex][absoluteNoteIndex];     // Get the Beat from the Bars
+        if (!beat) continue;                                        // Skip to the Next If Beat Could Not be Found
 
-    for (let index = 0 - PREV_BEATS; index <= NEXT_BEATS; index++ ) {   // Iterate Relative Index Numbers From Negative EG: -50 to 50
-        const relativeBarIndex = Math.floor(index / BEAT_NUM);      // Get the Bar Index Relative to the Current Bar
-        const absoluteBarIndex = barIndex + relativeBarIndex;       // Get the Absolute Bar Indexing
-        if (absoluteBarIndex < 0) continue;                         // Absolute Bar Index Must Be Positive
+        const duration = beat.duration;                             // Get the Duration of the Notes
+        beat.notes.forEach(note => {                                // Iterate Beat Notes
+            const stringName = note.match(/^[A-Z]/i)[0];            // Get String Name of the Note
+            const fretNumber = Number(note.match(/\d+$/g)[0]);      // Get Fret Number of the Note
+            const stringIndex = stringIndexMap[stringName];         // Get the String Index by the String Name
+            const indexOnMap = i + PREV_BEATS;                      // The Note Position on the Note Track Map
+            
+            for (let d = 0; d < duration; d++) {                    // Look Ahead and Fill Up Positions On the Map
+                if (indexOnMap + d > totalBeats - 1) continue;      // Do Not Let Indices Out of the Boundary of Note Track Map
+                const isStartOfNote = d === 0;                      // Get the First Note Item for Marking
+                const isEndOfNote = d === duration - 1;             // Get the Last Note Item for Marking
+                let mapStr = "";                                    // Initial String
+                if (isStartOfNote) mapStr += "<";                   // Add Start Mark
+                mapStr += fretNumber;                               // Add Fret Number
+                if (isEndOfNote) mapStr += ">";                     // Add End Mark
+                noteTrackMap[stringIndex][indexOnMap + d] = mapStr; // Add the Fret Position to the Index
+            }
+        });
+    }
 
-        //const bar = bars[absoluteBarIndex];                         // Get Displayable Bar
-        
-        //console.log(barIndex, relativeBarIndex, absoluteBarIndex);
-        //console.log(bar);
+    // Display Notes Based on String Map
+    const colors = ["yellow", "orange", "red", "purple", "blue", "green"];  // Colour Scheme
+    app.noteTrackMap = noteTrackMap;                                // Save or Update Map for Reference in Game Loop
+    for (let string_i = 0; string_i < STRING_NUM; string_i++) {     // Iterate Strings
+        for (let beat_i = 0; beat_i < totalBeats; beat_i++) {       // Iterate Notes
+            const id = `#note-track__beat-${ beat_i }-string-${ string_i }`; // Create the Index String for the DOM Element
+            const noteElem = $(id);                                 // Get the DOM Element with ID
+            
+            const mapPosition = noteTrackMap[string_i][beat_i];     // Get Element with Position
+            noteElem.classList.remove(...noteElem.classList);       // Remove All Classes
+            noteElem.classList.add("note-track__string");           // Add Back Original Class Name
+            noteElem.innerHTML = "";                                // Delete Text Content
+            if (mapPosition === undefined) continue;                // Next Iteration If No Item on Map Position 
+            
+            const isStartOfNote = mapPosition[0] === "<";           // Decide If Beat is The Beggining of a Note Press
+            const isEndOfNote = mapPosition[mapPosition.length - 1] === ">"; // Decide If Beat is The End of a Note Press
+            const fretNumber = mapPosition.match(/\d+/g)[0];        // Get Fret Number from Map
+            if (isStartOfNote) {                                    // Start Notes Look Different
+                noteElem.innerHTML = fretNumber;                    // Add Fret Number for Starter Notes
+                noteElem.classList.add("start");                    // Add Special Class to Them
+            }
+            if (isEndOfNote) noteElem.classList.add("end");         // End Notes Look Different As Well
+            if (beat_i < PREV_BEATS) noteElem.classList.add("prev");// Dim Played Notes
+            if (beat_i === PREV_BEATS) noteElem.classList.add("current"); // Highlight Actual Note
+            noteElem.classList.add("active");                       // Add Activated to Show Note on Track
+            noteElem.classList.add(colors[string_i]);               // Add Colour Class
+        }
     }
 }
 
+
+
+function scoreBeat() {
+    console.log("SCORE HERE")
+    console.log(app)
+    console.log(app.controllerState.highestFretPositions)
+}
 
 
 
@@ -478,3 +589,81 @@ function createGuitar() {
 
 
 
+// function placeNotesOnTrack(unformattedBars, noteTrack) {
+//     console.log("********************")
+//     app.transformedBars = transformBars(unformattedBars);           // Transform Bar for a More Efficient Structure
+//     console.log(app.transformedBars);
+//     const bars = app.transformedBars;                               // Create Short Variable to Reference it in the Fucntion
+
+//     // Read Bars and Create an Empty Track Map Structure
+//     const STRING_NUM = noteTrack.dimensions.strings;                // Six Strings on the Guitar
+//     const PREV_BEATS = noteTrack.dimensions.playedNotes;            // Show a Predefined Number of Played Notes (Beats)
+//     const NEXT_BEATS = noteTrack.dimensions.upcomingNotes;          // Show a Predefined Number of Next Notes (Beats)
+//     const BEAT_NUM = 32;                                            // 32 Beats in a Bar
+//     const totalBeats = PREV_BEATS + 1 + NEXT_BEATS;                 // Add Current Beat to the Total
+//     const { barIndex, noteIndex } = { ...app };                     // Extract Note and Bar Index from App State
+//     const noteTrackMap = [];                                        // Create an Empty Array for the Map
+//     const stringIndexMap = { E: 5, A: 4, D: 3, G: 2, B: 1, e: 0 };  // Get Index from Letters
+//     for (let i = 0; i < STRING_NUM; i++) {                          // Iterate the Strings
+//         noteTrackMap.push(new Array(totalBeats).fill(undefined));   // Filled with an Array of Undefined with the Length of the Track
+//     }
+    
+//     // Fill Up Track Map
+//     for (let i = 0 - PREV_BEATS; i <= NEXT_BEATS; i++ ) {   // Iterate Relative Index Numbers From Negative EG: -50 to 50
+//         const relativeBarIndex = Math.floor(i / BEAT_NUM);          // Get the Bar Index Relative to the Current Bar
+//         const absoluteBarIndex = barIndex + relativeBarIndex;       // Get the Absolute Bar Indexing
+//         const absoluteNoteIndex = Math.abs(i % BEAT_NUM >= 0        // Get the Absolute Index of Notes
+//             ? i % BEAT_NUM                                          // Positive is the Remainder of Beat Numbers
+//             : BEAT_NUM + (i % BEAT_NUM));                           // Negative Values Should Be Taken From the Back
+//         console.log(relativeBarIndex, absoluteBarIndex, absoluteNoteIndex);
+//         if (absoluteBarIndex < 0 || absoluteBarIndex > bars.length - 1) continue; // Absolute Bar Index Must Be Positive
+//         const beat = bars[absoluteBarIndex][absoluteNoteIndex];     // Get the Beat from the Bars
+//         if (!beat) continue;                                        // Skip to the Next If Beat Could Not be Found
+
+//         const duration = beat.duration;                             // Get the Duration of the Notes
+//         beat.notes.forEach(note => {                                // Iterate Beat Notes
+//             const stringName = note.match(/^[A-Z]/i)[0];            // Get String Name of the Note
+//             const fretNumber = Number(note.match(/\d+$/g)[0]);      // Get Fret Number of the Note
+//             const stringIndex = stringIndexMap[stringName];         // Get the String Index by the String Name
+//             const indexOnMap = i + PREV_BEATS;                      // The Note Position on the Note Track Map
+            
+//             for (let d = 0; d < duration; d++) {                    // Look Ahead and Fill Up Positions On the Map
+//                 if (indexOnMap + d > totalBeats - 1) continue;      // Do Not Let Indices Out of the Boundary of Note Track Map
+//                 const isStartOfNote = d === 0;                      // Get the First Note Item for Marking
+//                 const isEndOfNote = d === duration - 1;             // Get the Last Note Item for Marking
+//                 let mapStr = "";                                    // Initial String
+//                 if (isStartOfNote) mapStr += "<";                   // Add Start Mark
+//                 mapStr += fretNumber;                               // Add Fret Number
+//                 if (isEndOfNote) mapStr += ">";                     // Add End Mark
+//                 noteTrackMap[stringIndex][indexOnMap + d] = mapStr; // Add the Fret Position to the Index
+//             }
+//         });
+//     }
+
+//     // Display Notes Based on String Map
+//     const colors = ["yellow", "orange", "red", "purple", "blue", "green"];  // Colour Scheme
+//     app.noteTrackMap = noteTrackMap;                                // Save or Update Map for Reference in Game Loop
+//     for (let string_i = 0; string_i < STRING_NUM; string_i++) {     // Iterate Strings
+//         for (let beat_i = 0; beat_i < totalBeats; beat_i++) {       // Iterate Notes
+//             const id = `#note-track__beat-${ beat_i }-string-${ string_i }`; // Create the Index String for the DOM Element
+//             const noteElem = $(id);                                 // Get the DOM Element with ID
+            
+//             const mapPosition = noteTrackMap[string_i][beat_i];     // Get Element with Position
+//             noteElem.classList.remove(...noteElem.classList);       // Remove All Classes
+//             noteElem.classList.add("note-track__string");           // Add Back Original Class Name
+//             noteElem.innerHTML = "";                                // Delete Text Content
+//             if (mapPosition === undefined) continue;                // Next Iteration If No Item on Map Position 
+            
+//             const isStartOfNote = mapPosition[0] === "<";           // Decide If Beat is The Beggining of a Note Press
+//             const isEndOfNote = mapPosition[mapPosition.length - 1] === ">"; // Decide If Beat is The End of a Note Press
+//             const fretNumber = mapPosition.match(/\d+/g)[0];        // Get Fret Number from Map
+//             if (isStartOfNote) {                                    // Start Notes Look Different
+//                 noteElem.innerHTML = fretNumber;                    // Add Fret Number for Starter Notes
+//                 noteElem.classList.add("start");                    // Add Special Class to Them
+//             }
+//             if (isEndOfNote) noteElem.classList.add("end");         // End Notes Look Different As Well
+//             noteElem.classList.add("active");                       // Add Activated to Show Note on Track
+//             noteElem.classList.add(colors[string_i]);               // Add Colour Class
+//         }
+//     }
+// }

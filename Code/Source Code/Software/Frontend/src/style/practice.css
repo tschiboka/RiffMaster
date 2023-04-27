@@ -411,7 +411,7 @@ button#pause:disabled, button#play:disabled , button#stop:disabled {
     position: absolute;
     width: 100%;
     height: 1px;
-    background-color: #555;
+    background-color: #333;
 }
 
 .note-track__string-line:nth-child(1) { top: calc(8.333% * 1); }
@@ -426,16 +426,77 @@ button#pause:disabled, button#play:disabled , button#stop:disabled {
     height: 100%;
     display: flex;
     flex-direction: column;
+    justify-content: space-around;
+}
+
+.note-track__beat.first-beat {
+    border-left: 1px solid #333;
 }
 
 .note-track__string {
     width: 100%;
-    height: 100%;
+    max-height: 8.333%;
+    height: 8.333%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #000;
+    font-weight: bold;
+    font-size: 16px;
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid transparent;
+}
+
+.note-track__string.active {
+    border-top: 2px solid #555;
+    border-bottom: 2px solid #555;
+    z-index: 100;
+}
+
+.note-track__string.active.start {
+    border-top-left-radius: 100%;
+    border-bottom-left-radius: 100%;
+    border-left: 1px solid transparent;
 }
 
 
+.note-track__string.active.end {
+    border-top-right-radius: 100%;
+    border-bottom-right-radius: 100%;
+    border-right: 1px solid #555;
+}
 
+.note-track__string.yellow { background-color: rgb(116, 116, 0); border-color: yellow; }
+.note-track__string.orange { background-color: rgb(121, 74, 0); border-color: #fa9b00; }
+.note-track__string.red { background-color: rgb(127, 20, 77); border-color: #ff1493 ;}
+.note-track__string.purple { background-color: rgb(96, 49, 108); border-color: #ba55d3; }
+.note-track__string.blue { background-color: rgb(0, 85, 85); border-color: #00ffff; }
+.note-track__string.green { background-color: rgb(0, 89, 45); border-color: #00ff7f; }
 
+.note-track__string.current.yellow { background-color: yellow; }
+.note-track__string.current.orange { background-color: #fa9b00; }
+.note-track__string.current.red { background-color: #ff1493 ;}
+.note-track__string.current.purple { background-color: #ba55d3; }
+.note-track__string.current.blue { background-color: #00ffff; }
+.note-track__string.current.green { background-color: #00ff7f; }
+
+.note-track__string.start.yellow { border-left: 1px solid yellow; }
+.note-track__string.start.orange { border-left: 1px solid #fa9b00; }
+.note-track__string.start.red { border-left: 1px solid #ff1493 ;}
+.note-track__string.start.purple { border-left: 1px solid #ba55d3; }
+.note-track__string.start.blue { border-left: 1px solid #00ffff; }
+.note-track__string.start.green { border-left: 1px solid #00ff7f; }
+
+.note-track__string.end.yellow { border-right: 1px solid yellow; }
+.note-track__string.end.orange { border-right: 1px solid #fa9b00; }
+.note-track__string.end.red { border-right: 1px solid #ff1493 ;}
+.note-track__string.end.purple { border-right: 1px solid #ba55d3; }
+.note-track__string.end.blue { border-right: 1px solid #00ffff; }
+.note-track__string.end.green { border-right: 1px solid #00ff7f; }
+
+.note-track__string.prev {
+    opacity: 0.5;
+}
 
 /* Guitar */
 #guitar {
