@@ -52,6 +52,7 @@ const users = require("./routes/user");
 const login = require("./routes/login");
 const profile = require("./routes/profile");
 const tab = require("./routes/tab");
+const play = require("./routes/play");
 const achievements = require("./routes/achievement");
 const subscribe = require("./routes/subscribe");
 const confirm = require("./routes/confirm");
@@ -61,6 +62,7 @@ app.use("/api/users", users);                                      // Users API 
 app.use("/api/login", login);                                      // Login API Route
 app.use("/api/profiles", profile);                                 // Profile API Route
 app.use("/api/tabs", tab);                                         // Tab API Route
+app.use("/api/play", play);                                        // Play API Route
 app.use("/api/achievements", achievements);                        // Achievements API Route
 app.use("/api/subscribe", subscribe);                              // Subscribe API Route
 app.use("/api/confirm", confirm);                                  // Confirm API Route

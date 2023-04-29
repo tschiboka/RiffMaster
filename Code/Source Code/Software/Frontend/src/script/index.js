@@ -4,10 +4,10 @@ let profile;
 
 function validateCredentials() {
     const storage = $getStorage();
+    if (!storage?.token) window.location.href ="/Frontend/src/pages/login.html";
+
     user = storage.user;
     token = storage.token;
-    
-    if (!storage?.token) window.location.href ="/Frontend/src/pages/login.html";
 }
 
 async function start() {
@@ -38,20 +38,20 @@ async function getProfile() {
     catch (err) { console.log(err); }
 }
 
-async function getPublicTabs() {
-    try {
-        const url = "http://localhost:5000/api/tabs";
+async function getPublicTabs() {                                   // Get Tabs with isPublic True from DB
+    try {                                                          
+        const url = "http://localhost:5000/api/tabs";              // API Endpoint
         const option = {
-            "method": "GET",
-            "Content-Type": "application/json",
+            "method": "GET",                                       // Get Tabs
+            "Content-Type": "application/json",                   
             "Accept": "application/json",
-            "headers": { "x-auth-token": token }
+            "headers": { "x-auth-token": token }                   // Send JSON Signature Token
         }
-        const result = await fetch(url, option);
-        const json = await result.json();
-        return json.tabs.filter(tab => tab.isPublic);
+        const result = await fetch(url, option);                   // Consume Request
+        const json = await result.json();                          // Transform to JSON 
+        return json.tabs.filter(tab => tab.isPublic);              // Get Public Tabs
     }
-    catch (err) { console.log(err); }
+    catch (err) { console.log(err); }                              // Temp: Just Console (There Will be a Message Box)
 }
 
 function setProfileInfo() {

@@ -14,22 +14,53 @@
 </head>
 
 <body onload="start()">
+    <div id="scoreboard-bg">
+        <div id="scoreboard">
+            <div>
+                <span>Accuracy</span>
+                <span id="accuracy-score"></span>
+            </div>
+            <div>
+                <span>Precision</span>
+                <span id="precision-score"></span>
+            </div>
+    
+            <div>
+                <span>Points Earned</span>
+                <span id="points"></span>
+            </div>
+            <button onclick="closeScore()">OK</button>
+        </div>
+    </div>
     <header>
         <h1>Practice</h1>
-        <div class="track-info">Test Tablature</div>
+        <div class="track-info">
+            <div id="score">
+                <div id="accuracy-box"><div id="accuracy"></div></div>
+                <div id="precision-box"><div id="precision"></div></div>
+            </div>
+
+            <span id="title-info">Title Info</span>
+            <img id="cover-img" src="../../images/Amy_Winehouse___Lioness_Hidden_Treasures.png" alt="cover">
+        </div>
     </header>
 
     <main>
         <div id="tab-sheet"></div>
         <div id="note-track"></div>
         <div id="guitar"></div>
+        <div id="count-down">
+            <span id="count-down--3">3</span>
+            <span id="count-down--2">2</span>
+            <span id="count-down--1">1</span>
+        </div>
     </main>
 
     <footer>
         <button id="play" onclick="play()">
             <i class="fa-solid fa-play"></i>
         </button>
-        <button id="pause" onclick="play(true)">
+        <button id="pause" onclick="pause()">
             <i class="fa-solid fa-pause"></i>
         </button>
         <button id="stop" onclick="stopPlaying()">

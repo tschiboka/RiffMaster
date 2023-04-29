@@ -272,35 +272,35 @@ function gameLoop() {                                              // Run on Eve
             centerCurrentBarInTab();                               // On First Beat Redraw for Centering Active Bar and Notes
             highlightCurrentBar();                                 // Highlight Current Bar
 
-            const backButtons = $all("#fast-backward, #backward");
+            const backButtons = $all("#fast-backward, #backward"); // Disable Buttons
             backButtons.forEach(b => b.disabled = true);
-            const foreButtons = $all("#fast-forward, #forward");
+            const foreButtons = $all("#fast-forward, #forward");   // Disable Buttons
             foreButtons.forEach(b => b.disabled = true);
         }
-        highlightCurrentNotes();
+        highlightCurrentNotes();                                   // Highlight 
         
         // Play Tab Notes
         const bar = app.tab.bars[app.barIndex];
-        bar.forEach((note, noteIndex) => { 
-            const [ noteStr, start, duration] = note.split(":");
+        bar.forEach((note, noteIndex) => {                          // Traverse  Bars
+            const [ noteStr, start, duration] = note.split(":");    // Get Beats
             
-            if (start == app.noteIndex) {
-                const indNotesElem = $("#current-note");
-                indNotesElem.innerHTML = noteIndex + 1;
+            if (start == app.noteIndex) {                           // If Note Should Start
+                const indNotesElem = $("#current-note");            // Get The Current Note Element in Header
+                indNotesElem.innerHTML = noteIndex + 1;             // Display the Note Index in Header
                 
-                noteStr.split(",").forEach(n => {
-                    const letter = n.match(/[a-z]/gi)[0];
-                    const number = n.match(/[0-9]+/gi)[0];
-                    const offSet = stringJumps[letter];
-                    const audioIndex = Number(number) + Number(offSet);
-                    const audioName = guitarNotes[audioIndex];
-                    playNote(audioName);
+                noteStr.split(",").forEach(n => {                   // Split Note String
+                    const letter = n.match(/[a-z]/gi)[0];           // Get Letter
+                    const number = n.match(/[0-9]+/gi)[0];          // Get Number
+                    const offSet = stringJumps[letter];             // Get Offset for Jumps
+                    const audioIndex = Number(number) + Number(offSet);  // Get Audion Note
+                    const audioName = guitarNotes[audioIndex];      // Get Audio Name
+                    playNote(audioName);                            // Play the Note
                     
-                    const durationMS = getNoteDurationInMS(duration);
-                    const noteTimer = setTimeout(() => {
-                        stopNote(audioName);
-                        clearTimeout(noteTimer);
-                    }, durationMS);
+                    const durationMS = getNoteDurationInMS(duration);   // Calculate the Duration of the Note
+                    const noteTimer = setTimeout(() => {            // Create a Timer Function to Stpo the Note
+                        stopNote(audioName);                        // Stop
+                        clearTimeout(noteTimer);                    // Delete Timer
+                    }, durationMS);                                 
                 });
             }
         });
@@ -566,26 +566,26 @@ function getBeatInfoForEditing(event) {
 
 
 // Edit Tablature Note
-$("#tab-sheet").addEventListener("click", editBeat);
-function editBeat(event) {
-    const body = $("body");
-    const elem = event.target;
-    if (!app.tabEditingEnabled) return;
-    if (!elem.classList.contains("beat")) return;
+$("#tab-sheet").addEventListener("click", editBeat);               // Use Event Delegation
+function editBeat(event) {                                         // Edit Function
+    const body = $("body");                                        // Get Body
+    const elem = event.target;                                     // Get Target
+    if (!app.tabEditingEnabled) return;                            // Do Nothing If Tab Editing is Disabled
+    if (!elem.classList.contains("beat")) return;                  // Do Nothing If Click Not Happened on a Beat
 
-    const prevEditForms = $("#beat-edit-bg");
-    if (prevEditForms) body.removeChild(prevEditForms);
+    const prevEditForms = $("#beat-edit-bg");                      // Get Previously Opened Editors
+    if (prevEditForms) body.removeChild(prevEditForms);            // Remove Them
 
-    const beatInfo = getBeatInfoForEditing(event);
+    const beatInfo = getBeatInfoForEditing(event);                  
     app.editFormInfo = {};
 
     // Align Edit Form Around the Clicked Element
-    const { width, height } = elem.getBoundingClientRect()
-    const windowWidth = window.innerWidth || body.clientWidth;
-    const windowHeight = window.innerHeight || body.clientHeight;
-    const { x, y } = beatInfo.rect;
-    const placeLeft = x >= windowWidth / 2;
-    const placeTop = y >= windowHeight / 2;
+    const { width, height } = elem.getBoundingClientRect();         // Form Height and Width
+    const windowWidth = window.innerWidth || body.clientWidth;      // Window Dimenstions
+    const windowHeight = window.innerHeight || body.clientHeight;   
+    const { x, y } = beatInfo.rect;                                 // Bounding Client Rectangle
+    let placeLeft = x >= windowWidth / 2;                           // Mid Points
+    let placeTop = y >= windowHeight / 2;
 
     // Add Edit Form
     const bg = $append({ tag: "div", id: "beat-edit-bg", parent: body });
@@ -597,7 +597,10 @@ function editBeat(event) {
     if (placeLeft) form.style.right = (windowWidth - x + offSet) + "px";
     else form.style.left = (x + width + offSet) + "px";
     if (placeTop) form.style.bottom = (windowHeight - y + offSet) + "px";
-    else form.style.top = (y + height + offSet) + "px";
+    else {
+        if (y + height + offSet + 542 > windowHeight) form.style.bottom = "0px";
+        else form.style.top = (y + height + offSet) + "px";
+    }
 
     // Add Chord Name Input
     const chordNameInputField = $append({ tag: "fieldset", parent: form });
@@ -739,7 +742,10 @@ function editBeat(event) {
             messageBox.style.display = "flex";
             message.innerHTML = valid.message;
         }
-        else editBar(values, beatInfo);
+        else {
+            editBar(values, beatInfo);
+            centerCurrentBarInTab();
+        }
     });
 }
 

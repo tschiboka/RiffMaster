@@ -29,11 +29,11 @@ $("#allow-music-btn").addEventListener("click", () => {
 
 
 function getDOMElements() {
-    app.DOM.board_LI = [...$all("#guitar li.fret-note")];
-    app.DOM.board_SPAN = [...$all("#guitar span.fret-note")];
-    app.DOM.board_BTN = [...$all("#guitar button")];
-    app.DOM.boardStrings = [...$all(".guitar__string")];
-    app.DOM.equalizerBeats_DIV = [...$all(".equalizer__beat")];
+    app.DOM.board_LI = [...$all("#guitar li.fret-note")];                   // List Element (Note)
+    app.DOM.board_SPAN = [...$all("#guitar span.fret-note")];               // Span Element (Note's Text)
+    app.DOM.board_BTN = [...$all("#guitar button")];                        // String Buttons
+    app.DOM.boardStrings = [...$all(".guitar__string")];                    // Strings
+    app.DOM.equalizerBeats_DIV = [...$all(".equalizer__beat")];             // Small Square on the Equaliser
 }
 
 
@@ -263,32 +263,34 @@ function displayActionOnEqualizer(note, start, string) {
 
     }
 
-    if (start) {                                              // Strum Actions Triggers Beat Animation        
-        let counter = 0;
-        app.equalizerTimers[noteIndex] = setInterval(function() {
-            app.equalizer[noteIndex] = index + counter;
-            drawColumn(index, index + counter, string);
+    if (start) {                                                   // Strum Actions Triggers Beat Animation        
+        let counter = 0;                                           // Reset Counter
+        app.equalizerTimers[noteIndex] = setInterval(function() {  // Start Interval
+            app.equalizer[noteIndex] = index + counter;            // Store the Equaliser on App State
+            drawColumn(index, index + counter, string);            // Draw Elements
 
-            if (counter >= 32) { 
-                clearInterval(app.equalizerTimers[noteIndex]); 
-                app.equalizerTimers[noteIndex] = null;
-                return displayActionOnEqualizer(note, false, string);
+            if (counter >= 32) {                                   // If Counter Over Flows
+                clearInterval(app.equalizerTimers[noteIndex]);     // Delete Interval
+                app.equalizerTimers[noteIndex] = null;             // Clear Storage As Well
+                return displayActionOnEqualizer(note, false, string);  // Recurse to Down Cycle
             }
-            counter++;
-        }, 2000 / BEATS);                                     // 32 Beats in 2 Second
+            counter++;                                             // Increment Counter
+        }, 2000 / BEATS);                                          // 32 Beats in 2 Second
     }
-    else {
-        let counter = app.equalizer[noteIndex];
-        app.equalizerTimers[noteIndex] = setInterval(function() {
-            app.equalizer[noteIndex] = index + counter;
-            drawColumn(index, counter, string);
+    else {                                                         // If Reverse
+        let counter = app.equalizer[noteIndex];                    // Get NoteIndex
+        app.equalizerTimers[noteIndex] = setInterval(function() {  // Create Timer
+            app.equalizer[noteIndex] = index + counter;            // Reset Equaliser Counter
+            drawColumn(index, counter, string);                    // Draw Element
 
-            if (counter < 0) { 
-                clearInterval(app.equalizerTimers[noteIndex]); 
-                app.equalizerTimers[noteIndex] = null;
+            if (counter < 0) {                                     // If Reached 0
+                clearInterval(app.equalizerTimers[noteIndex]);     // Clear Timer
+                app.equalizerTimers[noteIndex] = null;             // Reset App State
                 return;
             }
-            counter--;
-        }, 1);                                     // 32 Beats in 2 Second
+            counter--;                                             // Decrement Here
+        }, 1);                                                     // 32 Beats Each 1ms
     }
 }
+
+

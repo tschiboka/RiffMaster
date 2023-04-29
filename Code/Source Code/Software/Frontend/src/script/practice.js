@@ -1,4 +1,5 @@
 const app = {
+    musicAgreement: true,
     controllerState: initialiseAppControllerState(),               // Set Inital State and Variables
     DOM: {},                                                       // Store Board and Equaliser Elements for Time Performance
     barIndex: 0,                                                   // Start From Bar 0
@@ -7,10 +8,14 @@ const app = {
     noteTrack: {                                                   // Note Track Information
         dimensions: {                                              // The Number of Rows and Columns of Note Track
             strings: 6,                                            // Tab Always Have 6 Strings
-            playedNotes: 50,                                       // Show the Last 50 Notes (Beats) that Played Recently
-            upcomingNotes: 50                                      // Show the Next 50 Beats (Current is Excluded)
+            playedNotes: 30,                                       // Show the Last 50 Notes (Beats) that Played Recently
+            upcomingNotes: 70                                      // Show the Next 50 Beats (Current is Excluded)
         }
-    }
+    },
+    audio: undefined,
+    registeredNotes: [undefined, undefined, undefined, undefined, undefined, undefined],
+    accuracyForBeat: [],
+    precisionForStrums: [],
 }
 
 const guitarNotes = ["E2", "F2", "Fs2", "G2", "Gs2", "A2", "As2", "B2", "C3", "Cs3", "D3", "Ds3", "E3", "F3", "Fs3", "G3", "Gs3", "A3", "As3", "B3", "C4", "Cs4", "D4", "Ds4", "E4", "F4", "Fs4", "G4", "Gs4", "A4", "As4", "B4", "C5", "Cs5", "D5", "Ds5", "E5", "F5", "Fs5", "G5", "Gs5", "A5", "As5", "B5", "C6"];
@@ -26,8 +31,18 @@ async function start() {
     const tabResponse = await getTab();
     app.tab = tabResponse.tab;
     app.tab.bars = JSON.parse(app.tab.content);
+
+    // Get Music Audio
+    const audioName = app.tab.artist + " - " + app.tab.title;
+    const audioPath = "../../audio/" + audioName + ".mp3";
+    app.audio = new Howl({ 
+        src: [audioPath], 
+        html5: true,
+        buffer: true
+    });
     
     // Display Tab
+    displayTrackInfo();
     displayTabSheet(app.tab.bars);
     displayNotesOnTab(app.tab.bars);
     createNoteTrack(app.noteTrack);
@@ -50,7 +65,7 @@ async function start() {
 
 async function getTab() {
     // Get a Predefined Tab for Testing Purposes
-    const tabID = "643ec462e514d909f57d4826";
+    const tabID = "642c4ac13a1dd7fac9f262cb";
     try {
         const options = {
             method: 'GET',
@@ -167,9 +182,10 @@ function gameLoop() {                                              // Run on Eve
             app.barIndex++;                                        // Increment Bar Index
 
             if (app.barIndex >= app.tab.bars.length) {             // If No More Bars to Play
-                play(true);                                 // Pause
-                    app.barIndex = 0;                              // Reset Bar Index
-                    app.noteIndex = 0;                             // Reset Note Index
+                stopPlaying();                                     // Pause
+                app.barIndex = 0;                                  // Reset Bar Index
+                app.noteIndex = 0;                                 // Reset Note Index
+                displayScore();
             }
         }
     }
@@ -178,39 +194,48 @@ function gameLoop() {                                              // Run on Eve
 
 
 // Toggle Play and Pause Buttons
-function play(pause = false) {
-    if (app.tab.bars.length === 0) return;
+function play() {
+    if (app.tab.bars.length === 0) return;                         // Do Nothing If Tab Bars are Not Present
+    const playBtn = $("#play");                                    // Get Play Button
+    const pauseBtn = $("#pause");                                  // Get Pause Button
+    playBtn.disabled = true;                                       // Disable Play Button
+
+    let countDownState = 3;
+    const countDownTimer = setInterval(() => {
+        countDown(countDownState);
+        if (countDownState <= 0) {
+            app.play = true;                                       // Set Play
+            playBtn.disabled = true;                               // Disable Play Button
+            pauseBtn.disabled = false;                             // Enable Pause Button
+            displayNotesOnTab(app.tab.bars);                               
+            $("#stop").disabled = false;          
+            clearInterval(countDownTimer);
+            app.audio.play();
+        }
+        countDownState--;
+    }, 1000);
+}
+
+
+
+function pause() {
+    if (app.tab.bars.length === 0) return;                         // Do Nothing If Tab Bars are Not Present
     const playBtn = $("#play");                                    // Get Play Button
     const pauseBtn = $("#pause");                                  // Get Pause Button
 
-    if (!pause) {                                                  // If Game is Not Paused
-        let countDownState = 3;
-        const countDownTimer = setInterval(() => {
-            if (countDownState > 0) console.log(countDownState--);
-            else {
-                clearInterval(countDownTimer);
-            }
-        }, 1000);
-        
-        app.play = true;                                           // Set Play
-        playBtn.disabled = true;                                   // Disable Play Button
-        pauseBtn.disabled = false;                                 // Enable Pause Button
-        displayNotesOnTab(app.tab.bars);                               
-        $("#stop").disabled = false;          
-    }
-    else {                                                         // If Pause Pressed
-        app.play = false;                                          // Unset Play
-        playBtn.disabled = false;                                  // Enable Play Button
-        pauseBtn.disabled = true;                                  // Disable Pause Button
-        $("#stop").disabled = true;          
-    }
+    app.play = false;                                          // Unset Play
+    playBtn.disabled = false;                                  // Enable Play Button
+    pauseBtn.disabled = true;                                  // Disable Pause Button
+    app.audio.pause();
+    $("#stop").disabled = true;          
 }
 
 
 
 
 function stopPlaying() {
-    play(true);
+    pause();
+    app.audio.stop();
     clearTabStyling();
     app.barIndex = 0;
     app.noteIndex = 0;
@@ -219,6 +244,25 @@ function stopPlaying() {
     highlightCurrentNotes();
     createNoteTrack(app.noteTrack);
     placeNotesOnTrack(app.tab.bars, app.noteTrack);
+}
+
+
+
+function countDown(counter) {
+    const counterDiv = $("#count-down");
+    const count1 = $("#count-down--1");
+    const count2 = $("#count-down--2");
+    const count3 = $("#count-down--3");
+    counterDiv.style.display = "none";
+    count1.style.display = "none";
+    count2.style.display = "none";
+    count3.style.display = "none";
+    if (counter > 0 && counter <= 3) {
+        console.log(counter);
+        const count = $("#count-down--" + counter);
+        count.style.display = "inline";
+        counterDiv.style.display = "flex";
+    }
 }
 
 
@@ -470,10 +514,79 @@ function placeNotesOnTrack(unformattedBars, noteTrack) {
 
 
 
+function handleStrumActivated(event, strum) {
+    const positions = app.controllerState.highestFretPositions[strum - 1];  // Finger Positions on a String Row
+    const upperMost = positions[positions.length - 1] || 0;                 // Topmost Pressed Position
+
+    
+    if (event !== 0) {                                                      // Strum Pressed  
+        app.registeredNotes[strum - 1] = undefined;
+        displayActionOnBoard(upperMost, strum, strum, !event);              // Highlight Played Note and String
+    }
+    else {                                                                  // Strum Released
+        app.registeredNotes[strum - 1] = upperMost;                         // Register Note
+        if (upperMost === undefined) return;
+        if (upperMost !== 0) {                                              // If Finger Position is Not 0
+            displayActionOnBoard(upperMost, strum, -1, false);              // Put Back Semi Highlight
+        }
+        else {
+            displayActionOnBoard(upperMost, strum, strum, !event);          // Clear Highlight
+        }
+    }
+
+    // GET PRECISION
+    if (app.play && event === 0) {
+        let precisionScore = 0;
+        let upcomingPrecisionScore = 0;
+        let pastPrecisionScore = 0
+        const string = 6 - strum;
+        const currentIndex = app.noteTrack.dimensions.playedNotes;
+        const upcomingMapSection = app.noteTrackMap[string].slice(currentIndex, currentIndex + 10);
+        const upcomingSectionIndex = upcomingMapSection.findIndex(note => note === "<" + upperMost);            // Find if any of the notes has a starting with uppermost
+        if (upcomingSectionIndex !== -1) {
+            upcomingPrecisionScore = [100, 90, 80, 70, 60, 50, 40, 30, 20, 10][upcomingSectionIndex];
+        }
+
+        const pastMapSection = app.noteTrackMap[string].slice(currentIndex - 9, currentIndex + 1);
+        const pastSectionIndex = pastMapSection.findIndex(note => note === "<" + upperMost);            // Find if any of the notes has a starting with uppermost
+        if (pastSectionIndex !== -1) {
+            pastPrecisionScore = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100][pastSectionIndex];
+        }
+        precisionScore = Math.max(upcomingPrecisionScore, pastPrecisionScore);
+        app.precisionForStrums.push(precisionScore);
+        const avgPrecision = app.precisionForStrums.reduce((a, b) => a + b) / app.precisionForStrums.length;
+        const precisionBarElem = $("#precision");
+        precisionBarElem.style.width = avgPrecision + "%";
+    }
+}
+
+
+
+function handleFretActivated(event, fret, string) {
+    if (!fret) return;
+    app.registeredNotes[string - 1] = undefined;
+    displayActionOnBoard(fret, string, -1, !event);
+    
+    if (event === 0) {                                                      // If Finger is Off Position 
+    }
+    else {                                                                  // If Finger Presses Position
+    }
+}
+
+
+
 function scoreBeat() {
-    console.log("SCORE HERE")
-    console.log(app)
-    console.log(app.controllerState.highestFretPositions)
+    // Accuracy
+    const expectedNotes = app.noteTrackMap.map(string => string[app.noteTrack.dimensions.playedNotes] && Number(string[app.noteTrack.dimensions.playedNotes].match(/\d+/)[0]));
+    const currentNotes = [...app.registeredNotes].reverse();
+    expectedNotes.forEach((ex, i) => {
+        if (ex !== undefined) {
+            app.accuracyForBeat.push(currentNotes[i] === ex ? 1 : 0);
+        }
+    });
+    const accuracy = (app.accuracyForBeat.reduce((a, b) => a + b) / app.accuracyForBeat.length) * 100;
+    const accuracyBarElem = $("#accuracy");
+    accuracyBarElem.style.width = accuracy + "%";
 }
 
 
@@ -589,81 +702,44 @@ function createGuitar() {
 
 
 
-// function placeNotesOnTrack(unformattedBars, noteTrack) {
-//     console.log("********************")
-//     app.transformedBars = transformBars(unformattedBars);           // Transform Bar for a More Efficient Structure
-//     console.log(app.transformedBars);
-//     const bars = app.transformedBars;                               // Create Short Variable to Reference it in the Fucntion
+function displayTrackInfo() {
+    // Title
+    const tab = app.tab;
+    const titleInfoElem = $("#title-info");
+    titleInfoElem.innerHTML = tab.title + " - " + tab.artist;
 
-//     // Read Bars and Create an Empty Track Map Structure
-//     const STRING_NUM = noteTrack.dimensions.strings;                // Six Strings on the Guitar
-//     const PREV_BEATS = noteTrack.dimensions.playedNotes;            // Show a Predefined Number of Played Notes (Beats)
-//     const NEXT_BEATS = noteTrack.dimensions.upcomingNotes;          // Show a Predefined Number of Next Notes (Beats)
-//     const BEAT_NUM = 32;                                            // 32 Beats in a Bar
-//     const totalBeats = PREV_BEATS + 1 + NEXT_BEATS;                 // Add Current Beat to the Total
-//     const { barIndex, noteIndex } = { ...app };                     // Extract Note and Bar Index from App State
-//     const noteTrackMap = [];                                        // Create an Empty Array for the Map
-//     const stringIndexMap = { E: 5, A: 4, D: 3, G: 2, B: 1, e: 0 };  // Get Index from Letters
-//     for (let i = 0; i < STRING_NUM; i++) {                          // Iterate the Strings
-//         noteTrackMap.push(new Array(totalBeats).fill(undefined));   // Filled with an Array of Undefined with the Length of the Track
-//     }
-    
-//     // Fill Up Track Map
-//     for (let i = 0 - PREV_BEATS; i <= NEXT_BEATS; i++ ) {   // Iterate Relative Index Numbers From Negative EG: -50 to 50
-//         const relativeBarIndex = Math.floor(i / BEAT_NUM);          // Get the Bar Index Relative to the Current Bar
-//         const absoluteBarIndex = barIndex + relativeBarIndex;       // Get the Absolute Bar Indexing
-//         const absoluteNoteIndex = Math.abs(i % BEAT_NUM >= 0        // Get the Absolute Index of Notes
-//             ? i % BEAT_NUM                                          // Positive is the Remainder of Beat Numbers
-//             : BEAT_NUM + (i % BEAT_NUM));                           // Negative Values Should Be Taken From the Back
-//         console.log(relativeBarIndex, absoluteBarIndex, absoluteNoteIndex);
-//         if (absoluteBarIndex < 0 || absoluteBarIndex > bars.length - 1) continue; // Absolute Bar Index Must Be Positive
-//         const beat = bars[absoluteBarIndex][absoluteNoteIndex];     // Get the Beat from the Bars
-//         if (!beat) continue;                                        // Skip to the Next If Beat Could Not be Found
+    // Cover Image
+    const coverImgElem = $("#cover-img");
+    if (tab.title + " - " + tab.artist === "Nothing Else Matters Intro - Metallica");
+    coverImgElem.src = "../../images/Metallica__Master_of_Puppets.jpg";
+}
 
-//         const duration = beat.duration;                             // Get the Duration of the Notes
-//         beat.notes.forEach(note => {                                // Iterate Beat Notes
-//             const stringName = note.match(/^[A-Z]/i)[0];            // Get String Name of the Note
-//             const fretNumber = Number(note.match(/\d+$/g)[0]);      // Get Fret Number of the Note
-//             const stringIndex = stringIndexMap[stringName];         // Get the String Index by the String Name
-//             const indexOnMap = i + PREV_BEATS;                      // The Note Position on the Note Track Map
-            
-//             for (let d = 0; d < duration; d++) {                    // Look Ahead and Fill Up Positions On the Map
-//                 if (indexOnMap + d > totalBeats - 1) continue;      // Do Not Let Indices Out of the Boundary of Note Track Map
-//                 const isStartOfNote = d === 0;                      // Get the First Note Item for Marking
-//                 const isEndOfNote = d === duration - 1;             // Get the Last Note Item for Marking
-//                 let mapStr = "";                                    // Initial String
-//                 if (isStartOfNote) mapStr += "<";                   // Add Start Mark
-//                 mapStr += fretNumber;                               // Add Fret Number
-//                 if (isEndOfNote) mapStr += ">";                     // Add End Mark
-//                 noteTrackMap[stringIndex][indexOnMap + d] = mapStr; // Add the Fret Position to the Index
-//             }
-//         });
-//     }
 
-//     // Display Notes Based on String Map
-//     const colors = ["yellow", "orange", "red", "purple", "blue", "green"];  // Colour Scheme
-//     app.noteTrackMap = noteTrackMap;                                // Save or Update Map for Reference in Game Loop
-//     for (let string_i = 0; string_i < STRING_NUM; string_i++) {     // Iterate Strings
-//         for (let beat_i = 0; beat_i < totalBeats; beat_i++) {       // Iterate Notes
-//             const id = `#note-track__beat-${ beat_i }-string-${ string_i }`; // Create the Index String for the DOM Element
-//             const noteElem = $(id);                                 // Get the DOM Element with ID
-            
-//             const mapPosition = noteTrackMap[string_i][beat_i];     // Get Element with Position
-//             noteElem.classList.remove(...noteElem.classList);       // Remove All Classes
-//             noteElem.classList.add("note-track__string");           // Add Back Original Class Name
-//             noteElem.innerHTML = "";                                // Delete Text Content
-//             if (mapPosition === undefined) continue;                // Next Iteration If No Item on Map Position 
-            
-//             const isStartOfNote = mapPosition[0] === "<";           // Decide If Beat is The Beggining of a Note Press
-//             const isEndOfNote = mapPosition[mapPosition.length - 1] === ">"; // Decide If Beat is The End of a Note Press
-//             const fretNumber = mapPosition.match(/\d+/g)[0];        // Get Fret Number from Map
-//             if (isStartOfNote) {                                    // Start Notes Look Different
-//                 noteElem.innerHTML = fretNumber;                    // Add Fret Number for Starter Notes
-//                 noteElem.classList.add("start");                    // Add Special Class to Them
-//             }
-//             if (isEndOfNote) noteElem.classList.add("end");         // End Notes Look Different As Well
-//             noteElem.classList.add("active");                       // Add Activated to Show Note on Track
-//             noteElem.classList.add(colors[string_i]);               // Add Colour Class
-//         }
-//     }
-// }
+
+function displayScore() {
+    const scoreElem = $("#scoreboard-bg");
+    scoreElem.style.display = "flex";
+    const accuracyResult = $("#accuracy-score");
+    const precisionResult = $("#precision-score");
+    const pointsResult = $("#points");
+    const accuracy = app.accuracyForBeat.reduce((a, b) => a + b, 0) / app.accuracyForBeat.length * 100;
+    const precision = app.precisionForStrums.length ? app.precisionForStrums.reduce((a, b) => a + b, 0) / app.precisionForStrums.length : 0;
+    accuracyResult.innerHTML = Math.round(accuracy * 10) / 10 + "%";
+    precisionResult.innerHTML = Math.round(precision * 10) / 10 + "%";
+    const points = Math.round((accuracy + precision) / 2);
+    pointsResult.innerHTML = points;
+}
+
+
+
+
+function closeScore() {
+    const scoreElem = $("#scoreboard-bg");
+    scoreElem.style.display = "none";
+    app.accuracyForBeat = [];
+    app.precisionForStrums = [];   
+    const accuracyBarElem = $("#accuracy");
+    const precisionBarElem = $("#precision");
+    accuracyBarElem.style.width = "0%";
+    precisionBarElem.style.width = "0%";
+}

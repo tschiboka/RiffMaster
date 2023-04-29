@@ -391,44 +391,34 @@ async function register() {
 
 
 
+// The autocomplete function takes two arguments:
+//  inp: Text field element 
+//  arr: an array of possible autocompleted values:
 function autocomplete(inp, arr) {
-    /*the autocomplete function takes two arguments,
-    the text field element and an array of possible autocompleted values:*/
-    var currentFocus;
+    let currentFocus;
+    
+    inp.addEventListener("input", function(e) {                    // Execute Auto Complete When Someone Writes in the Text Field
+        const value = this.value;                                  // Get Value
+        closeAllLists();                                           // Close Any Already Open Lists of Autocompleted Values
+        if (!value) return false;                                  // If No Value Provided Return False
+        currentFocus = -1;                                         // Take Off Focus
 
-    /*execute a function when someone writes in the text field:*/
-    inp.addEventListener("input", function(e) {
-        var a, b, i, val = this.value;
-        /*close any already open lists of autocompleted values*/
-        closeAllLists();
-        if (!val) { return false;}
-        currentFocus = -1;
-        /*create a DIV element that will contain the items (values):*/
-        a = document.createElement("DIV");
-        a.setAttribute("id", this.id + "autocomplete-list");
-        a.setAttribute("class", "autocomplete-items");
-        /*append the DIV element as a child of the autocomplete container:*/
-        this.parentNode.appendChild(a);
-        /*for each item in the array...*/
-        for (i = 0; i < arr.length; i++) {
-          /*check if the item starts with the same letters as the text field value:*/
-          if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
-            /*create a DIV element for each matching element:*/
-            b = document.createElement("DIV");
-            /*make the matching letters bold:*/
-            b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
-            b.innerHTML += arr[i].substr(val.length);
-            /*insert a input field that will hold the current array item's value:*/
-            b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
-            /*execute a function when someone clicks on the item value (DIV element):*/
-                b.addEventListener("click", function(e) {
-                /*insert the value for the autocomplete text field:*/
-                inp.value = this.getElementsByTagName("input")[0].value;
-                /*close the list of autocompleted values,
-                (or any other open lists of autocompleted values:*/
-                closeAllLists();
+        const div = document.createElement("DIV");                 // Create a DIV Element that Will Contain the Items (Values)
+        div.setAttribute("id", this.id + "autocomplete-list");     // Add ID
+        div.setAttribute("class", "autocomplete-items");           // Add Class Name
+        
+        this.parentNode.appendChild(div);                          // Append the DIV element as a Child of the Autocomplete Container
+        for (i = 0; i < arr.length; i++) {                         // Travers Items
+          if (arr[i].substr(0, value.length).toUpperCase() == value.toUpperCase()) { // Check If Item Starts with Value
+            elem = document.createElement("DIV");                  // Create Item Element
+            elem.innerHTML = "<strong>" + arr[i].substr(0, value.length) + "</strong>";  // Add Emphasis on Matching String
+            elem.innerHTML += arr[i].substr(value.length);         // Rest of the Text
+            elem.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";        // Insert Input that Holds the Current Array Item's Value
+                elem.addEventListener("click", function(e) {       // Execute a Callback on Click
+                inp.value = this.getElementsByTagName("input")[0].value;             // Insert the Value for the Autocomplete
+                closeAllLists();                                   // Close Any Opened Lists
             });
-            a.appendChild(b);
+            div.appendChild(elem);                                 // Append List
           }
         }
     });
