@@ -1,0 +1,8 @@
+{
+    "name": "Riff Master - Development",
+    "db": "DB_STRING",
+    "jwtPrivateKey": "",
+    "emailAddress": "",
+    "emailServer": "",
+    "emailPassword": ""
+}

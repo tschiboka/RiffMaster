@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/d5efc64c80.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="../style/compose.css">
+    <link rel="stylesheet" href="../style/message.css">
+    <link rel="icon" type="image/x-icon" href="../../images/icon.png">
+    <script src="../../util/misc.js"></script>
+    <script src="../../util/controller.js"></script>
+    <title>RiffMaster | Compose</title>
+</head>
+<body onload="start()">
+    <div>
+        <h1>Riff Master - Music Studio</h1>
+
+        <h2>
+            <div class="tabinfo" onclick="setTitleAndAuthor()">
+                <span id="title"></span>
+                <span id="band"></span>
+                <span id="tempo"></span>
+            </div>
+          
+            <div class="pagination">
+                Bar 
+                <span id="current-bar"></span>
+                of 
+                <span id="total-bars"></span>
+                | Note
+                <span id="current-note">0</span>
+                of 
+                <span id="total-notes"></span>
+            </div>
+
+            <div id="function-buttons">
+                <button title="Set Tempo" onclick="setTempo()"><i class="fa-regular fa-clock"></i></button>
+                <button 
+                    title="Switch ON / OFF Metronome"
+                    onclick="setMetronome()">
+                        <i class="fa-regular fa-hourglass"></i>
+                        <div class="btn-switch-light active" id="metronome-btn-switch-light"></div>
+                </button>
+                <button 
+                    id="edit-button"
+                    title="Edit Tab" 
+                    onclick="toggleTabEditing()">
+                        <i class="fa-solid fa-pen"></i>
+                        <div class="btn-switch-light" id="edit-btn-switch-light"></div>
+                </button>
+                <button
+                    disabled
+                    title="Undo" 
+                    id="undo"
+                    onclick="undo()"><i class="fa-solid fa-rotate-left"></i>
+                </button>
+                <button 
+                    title="Open Tab" 
+                    id="open"
+                    onclick="openTabForm()">
+                    <i class="fa-solid fa-folder-open"></i>
+                </button>
+                <button 
+                    title="Save Tab" 
+                    id="save"
+                    onclick="save()"><i class="fa-solid fa-floppy-disk"></i>
+                </button>
+                <button 
+                    title="Delete Tab" 
+                    id="delete"
+                    onclick="deleteTab()">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+            </div>
+        </h2>
+    </div>
+
+    <div id="tab-sheet"></div>
+ 
+    <div class="play-wrapper">
+        <button 
+            disabled 
+            id="fast-backward" 
+            title="Fast Backward"
+            onclick="stepBackward(true)">
+            <i class="fa-solid fa-backward-fast"></i>
+        </button>
+        <button 
+            disabled 
+            id="backward" 
+            title="Backward"
+            onclick="stepBackward()">
+            <i class="fa-solid fa-backward-step"></i>
+        </button>
+        <button 
+            id="play" 
+            onclick="playTab()" 
+            title="Play">
+            <i class="fa-solid fa-play"></i>
+        </button>
+        <button 
+            disabled
+            id="pause" 
+            title="Pause"
+            onclick="playTab(true)">
+            <i class="fa-solid fa-pause"></i>
+        </button>
+        <button 
+            disabled 
+            title="Stop"
+            id="stop"
+            onclick="stopPlaying()">
+            <i class="fa-solid fa-square"></i></button>
+        <button 
+            id="record"
+            title="Record"
+            onclick="record()"
+            >
+            <i class="fa-solid fa-circle"></i>
+            <div id="record-btn-switch-light" class="btn-switch-light"></div>
+        </button>
+            
+        <button 
+            id="forward"
+            title="Forward"
+            onclick="stepForward()">
+            <i class="fa-solid fa-forward-step"></i></button>
+            <button 
+            id="fast-forward"
+            title="Fast Forward"
+            onclick="stepForward(true)">
+            <i class="fa-solid fa-forward-fast"></i></button>
+        <button
+            id="repeat"
+            title="Repeat">
+            <i id="repeat-icon" class="fa-solid fa-repeat"></i>
+            <div id="repeat-btn-switch-light" class="btn-switch-light"></div>
+            <div id="repeat__from-to">
+                <input id="repeat-from" type="text" placeholder="from" />
+                <input id="repeat-to" type="text" placeholder="to" />
+            </div>    
+        </button>
+    </div>
+
+
+
+    <div id="save__bg">
+        <h1>Save Tablature</h1>
+        <form id="save__form">
+            <fieldset>
+                <label for="save__title">Title</label>
+                <input id="save__title" type="text" placeholder="Your Song Title">
+            </fieldset>
+
+            <fieldset>
+                <label for="save__artist">Artist</label>
+                <input id="save__artist" type="text" placeholder="Band Name">
+            </fieldset>
+
+            <fieldset>
+                <label for="save__author">Author</label>
+                <input disabled id="save__author" type="text">
+            </fieldset>
+
+            <fieldset>
+                <label for="save__tempo">Tempo in BPM</label>
+                <input id="save__tempo" type="text" placeholder="20 - 300">
+            </fieldset>
+
+            <fieldset id="save__privacy">
+                <label>Privacy</label>
+                <label for="save__public">Private</label>
+                <input checked type="radio" name="save__public" id="save__private">
+                
+                <label for="save__public">Public</label>
+                <input type="radio" name="save__public" id="save__public">
+            </fieldset>
+
+            <fieldset id="save__difficulty-box">
+                <label for="save__difficulty">Difficulty</label>
+                <input 
+                    type="range" 
+                    min="1" 
+                    max="10" 
+                    value="1" 
+                    class="slider" 
+                    id="save__difficulty"
+                    onchange="setDifficultyRangeText(this)" 
+                    oninput="setDifficultyRangeText(this)">
+                <span id="save__difficulty-text">1</span>
+            </fieldset>
+
+            <span id="save__message"></span>
+    
+            <div class="save__button-box">
+                <button id="save__cancel" type="button" onclick="closeSaveForm()">Cancel</button>
+                <button id="save__save" type="button" onclick="saveTablature()">Save</button>
+            </div>
+        </form>
+    </div>
+
+
+
+    <div id="open__bg">
+        <h1>OPEN TAB</h1>
+        <div id="open__form">
+            <ul id="open__tab-list">
+
+            </ul>
+            <span id="open__message"></span>
+    
+            <div class="open__button-box">
+                <button id="open__cancel" type="button" onclick="closeOpenTabForm()">Cancel</button>
+                <button disabled id="open__tab" type="button" onclick="openTablature()">Open</button>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js" integrity="sha512-6+YN/9o9BWrk6wSfGxQGpt3EUK6XeHi6yeHV+TYD2GR0Sj/cggRpXr1BrAQf0as6XslxomMUxXp2vIl+fv0QRA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="../script/compose.js"></script>
+<script src="../../util/tabs.js"></script>
+
+<script>
+    const body = document.getElementsByTagName("body")[0];
+    window.addEventListener("keydown", controllerListener);
+    window.addEventListener("keyup", controllerListener);
+</script>
+
+</html>

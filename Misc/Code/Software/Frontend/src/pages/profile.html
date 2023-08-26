@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../../images/icon.png">
+    <script src="https://kit.fontawesome.com/d5efc64c80.js" crossorigin="anonymous"></script>
+    <script src="../../util/misc.js"></script>
+    <link rel="stylesheet" href="../style/profile.css">
+    <script src="../script/profile.js"></script>
+    <title>RiffMaster | Profile</title>
+</head>
+<body onload="start()">
+    <h1>Riff Master - Profile</h1>
+    <div>
+        <div class="avatar-box">
+            <h2>Avatars</h2>
+        </div>    
+
+        <form>
+            <fieldset id="dob-field">
+                <label>Date of Birth</label>
+
+                <div class="date-inputs">
+                    <label for="day">Day</label>
+                    <input id="day" type="text" placeholder="DD">
+                    
+                    <label for="month">Month</label>
+                    <input id="month" type="text" placeholder="MM">
+
+                    <label for="year">Year</label>
+                    <input id="year" type="text" placeholder="YYYY">
+                </div>
+            </fieldset>
+    
+            <fieldset  id="gender-field">
+                <label>Gender</label>
+
+                <div class="gender-inputs">
+                    <label for="male">Male</label>
+                    <input id="male" type="radio" name="gender" value="male" checked>
+
+                    <label for="female">Female</label>
+                    <input id="female" type="radio" name="gender" value="female">
+
+                    <label for="gender-x">X</label>
+                    <input id="gender-x" type="radio" name="gender" value="x">
+                </div>
+            </fieldset>
+    
+            <fieldset  id="country-field">
+                <label for="country">Country</label>
+                <input id="country" type="text">
+            </fieldset>
+
+            <fieldset  id="city-field">
+                <label for="city">City</label>
+                <input id="city" type="text">
+            </fieldset>
+    
+            <fieldset  id="postcode-field">
+                <label for="postcode">Postcode</label>
+                <input id="postcode" type="text">
+            </fieldset>
+    
+            <fieldset  id="address1-field">
+                <label for="address1">Address Line 1</label>
+                <input id="address1" type="text">
+            </fieldset>
+    
+            <fieldset  id="address2-field">
+                <label for="address2">Address Line 2</label>
+                <input id="address2" type="text">
+            </fieldset>
+    
+            <fieldset  id="phone-field">
+                <label for="phone">Phone</label>
+                <input id="phone" type="text">
+            </fieldset>
+           
+            <span id="message"></span>
+    
+            <div class="button-box">
+                <button id="register" type="button">Confirm</button>
+            </div>
+        </form>
+    </div>
+    
+    <footer></footer>
+</body>
+</html>

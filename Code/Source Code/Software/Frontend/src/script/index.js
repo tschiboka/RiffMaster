@@ -3,9 +3,11 @@ let token;
 let profile;
 
 function validateCredentials() {
+    console.log("HERE");
     const storage = $getStorage();
-    if (!storage?.token) window.location.href ="/Frontend/src/pages/login.html";
-
+    const live = true;
+    if (live) if (!storage?.token) window.location.href = "https://tschiboka.co.uk/projects/riffmaster/src/pages/login.html";
+    else if (!storage?.token) window.location.href = "/src/pages/login.html";
     user = storage.user;
     token = storage.token;
 }

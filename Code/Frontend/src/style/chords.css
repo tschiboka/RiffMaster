@@ -1,0 +1,194 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+    scrollbar-color: springgreen black;
+    scrollbar-width: thin;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+}
+
+body {
+    background-color: #111;
+    min-height: 100vh;
+}
+
+main {
+    height: calc(100vh - 50px);
+    display: flex;
+    margin: 0 20px;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+section.chords-search {
+    width: 100%;
+    height: calc((60% - 50px));
+    max-height: calc((60% - 50px));
+}
+
+.chords-list {
+    padding: 10px;
+    height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    background: #090909;
+    border: 1px solid #333;
+    overflow-y: auto;
+}
+
+h1 {
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #ccc;
+    font-weight: lighter;
+    font-size: 24px;
+}
+
+.chords-filter {
+    height: calc((40% - 40px));
+    max-height: calc((40% - 40px));
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+    height: 50vh;
+    background: #090909;
+    border: 1px solid #333;
+}
+
+.chords-filter__options {
+    display: flex;
+    padding: 0 10px;
+    padding-top: 10px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.chords-filter__options > div {
+    width: 100%;
+}
+
+.chords-filter__options > div > div {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+#chords-filter__type-list {
+    padding: 0 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    overflow-y: auto;
+}
+
+.type-btn, .key-btn, .base-btn {
+    width: 200px;
+    height: 30px;
+    margin: 2px;
+    background-color: #111;
+    color: #ccc;
+    font-size: 18px;
+    font-family: monospace;
+    border: 1px solid #333;
+    border-radius: 5px;
+}
+
+.type-btn:hover, .key-btn:hover, .base-btn:hover {
+    background-color: #333;
+}
+
+.key-btn, .base-btn {
+    width: calc((100vw - 40px) / 18);
+    font-size: 22px;
+}
+
+.key-btn:disabled {
+    color: transparent;
+}
+
+button.active {
+    color: springgreen;
+    font-weight: bold;
+}
+
+.base-btns, .keynote-btns {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+#chord_search__filter-info {
+    color: #777;
+    font-family: monospace;
+}
+
+#chord_search__chord-info {
+    color: springgreen;
+    font-family: monospace;
+}
+
+.chord {
+    position: relative;
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    color: #999;
+    font-family: monospace;
+    font-weight: bold;
+    font-size: 16px;
+    text-align: center;
+    border: 1px solid #333;
+    cursor: pointer;
+}
+
+.chord * {
+    pointer-events: none;
+}
+
+.chord-name {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: monospace;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.chord-number, .fret-number {
+    position: absolute;
+    color: #999;
+    font-family: monospace;
+    font-weight: bold;
+}
+
+svg {
+    position: relative;
+}
+
+footer {
+    position: absolute;
+    bottom: 0px;
+    width: 100vw;
+    height: 50px;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    background: #111;
+    color: #333;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 20px;
+    border-top: 1px solid #333;
+}

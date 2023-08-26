@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../style/chords.css">
+    <script src="../../util/misc.js"></script>
+    <script src="../../util/chords.js"></script>
+    <title>RiffMaster | Chords</title>
+</head>
+
+<body onload="start()">
+    <main>
+        <section class="chords-search">
+            <h1>
+                Complete Chord List (
+                &nbsp;
+                <span id="chord_search__filter-info"></span>
+                &nbsp;)&nbsp;&nbsp;
+                Filter: [
+                &nbsp;
+                <span id="chord_search__chord-info"></span>
+                &nbsp; ]
+            </h1>
+
+            <div class="chords-list"></div>
+        </section>
+
+        <section class="chords-filter">
+            <div class="chords-filter__options">
+                <div class="keynote-btns">
+                    <div class="keynote-btns__btn-list"></div>
+                </div>
+                <div class="base-btns">
+                    <div class="basenote-btns__btn-list"></div>
+                </div>
+            </div>
+            <div id="chords-filter__type-list"></div>
+        </section>
+    </main>
+
+    <footer>Crafted with &hearts; by Tivadar Debnar</footer>
+</body>
+
+<script src="../script/chords.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js" integrity="sha512-6+YN/9o9BWrk6wSfGxQGpt3EUK6XeHi6yeHV+TYD2GR0Sj/cggRpXr1BrAQf0as6XslxomMUxXp2vIl+fv0QRA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</html>
