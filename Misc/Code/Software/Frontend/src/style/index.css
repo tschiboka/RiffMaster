@@ -1,0 +1,353 @@
+@font-face {
+    font-family: "GlueGun";
+    src: url("../../Fonts/GlueGun.otf");
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+    scrollbar-color: grey black;
+    scrollbar-width: thin;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+}
+
+body {
+    min-width: 100vw;
+    min-height: 100vh;
+    background-color: #111;
+}
+
+main {
+    display: flex;
+}
+
+.right-aside {
+    border-left: 1px solid #333;
+}
+
+.left-aside {
+    border-right: 1px solid #333;
+}
+
+.main-menu {
+    height: calc(100vh - 50px);
+    width: 46vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    font-family: "GlueGun";
+    font-size: 26px;
+    letter-spacing: 5px;
+}
+
+h1 {
+    margin-top: 60px;
+    margin-bottom: 40px;
+    letter-spacing: 5px;
+    font-size: 60px;
+    text-align: center;
+    font-family: "GlueGun";
+    color: #bbb;
+    text-shadow: 5px 5px black, -3px -3px #333;
+}
+
+.main-menu img {
+    width: 100%;
+    opacity: 0.3;
+}
+
+menu {
+    list-style: none;
+}
+
+menu li {
+    width: 306px;
+    height: 56px;
+    margin: 14px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    clip-path: polygon(
+        15px 0,
+        calc(100% - 15px) 0,
+        100% 15px,
+        100% calc(100% - 15px),
+        calc(100% - 15px) 100%,
+        15px 100%,
+        0 calc(100% - 15px),
+        0 15px
+    );
+}
+
+menu li:nth-child(1) { background-color: rgb(116, 116, 0);}
+menu li:nth-child(2) { background-color: rgb(121, 74, 0);}
+menu li:nth-child(3) { background-color: rgb(127, 20, 77);}
+menu li:nth-child(4) { background-color: rgb(96, 49, 108);}
+menu li:nth-child(5) { background-color: rgb(0, 85, 85);}
+menu li:nth-child(6) { background-color: rgb(0, 89, 45);}
+
+menu li a {
+    width: 300px;
+    height: 50px;
+    border: none;
+    font-size: 40px;
+    letter-spacing: 5px;
+    text-align: center;
+    text-decoration: none;
+    font-family: "GlueGun" !important;
+    clip-path: polygon(
+        15px 0,
+        285px 0,
+        300px 15px,
+        300px 35px,
+        285px 50px,
+        15px 50px,
+        0 35px,
+        0 15px
+    );
+}
+
+menu li:nth-child(1) a {
+    background: yellow;
+    background: linear-gradient(rgb(255, 255, 118), yellow, rgba(255, 255, 0, 0.05));
+    color: rgb(44, 44, 0);
+    text-shadow: 2px 2px 2px black, -2px -2px 2px  rgba(255, 255, 255, 0.3);
+    cursor: pointer;        
+}
+
+menu li:nth-child(2) a {
+    background: rgb(250, 155, 0);
+    background: linear-gradient(rgb(253, 182, 66), rgb(250, 155, 0), rgba(250, 155, 0, 0.05));
+    color: rgb(49, 30, 0);
+    text-shadow: 2px 2px 2px black, -2px -2px 2px  rgba(255, 255, 255, 0.3);
+    cursor: pointer;        
+}
+
+menu li:nth-child(3) a {
+    background: deeppink;
+    background: linear-gradient(rgb(244, 79, 167), deeppink, rgba(255, 20, 145, 0.05));
+    color: rgb(60, 8, 36);
+    text-shadow: 2px 2px 2px black, -2px -2px 2px  rgba(255, 255, 255, 0.3);
+    cursor: pointer;        
+}
+
+menu li:nth-child(4) a {
+    background: mediumorchid;
+    background: linear-gradient(rgb(184, 111, 202), mediumorchid, rgba(186, 85, 211, 0.05));
+    color: rgb(46, 23, 52);
+    text-shadow: 2px 2px 2px black, -2px -2px 2px  rgba(255, 255, 255, 0.3);
+    cursor: pointer;        
+}
+
+menu li:nth-child(5) a {
+    background: linear-gradient(rgb(109, 255, 255), aqua, rgba(0, 255, 255, 0.05));
+    color: rgb(0, 47, 47);
+    text-shadow: 2px 2px 2px black, -2px -2px 2px  rgba(255, 255, 255, 0.3);
+    cursor: pointer;        
+}
+
+menu li:nth-child(6) a {
+    background: linear-gradient(rgb(123, 255, 189), springgreen, rgba(0, 255, 128, 0.05));
+    color: rgb(0, 54, 27);
+    text-shadow: 2px 2px 2px black, -2px -2px 2px  rgba(255, 255, 255, 0.3);
+    cursor: pointer;        
+}
+
+menu li:nth-child(1) a:hover { background: linear-gradient(360deg, rgb(255, 255, 118), yellow, rgba(255, 255, 0, 0.05)); }        
+menu li:nth-child(2) a:hover { background: linear-gradient(360deg, rgb(253, 182, 66), rgb(250, 155, 0), rgba(250, 155, 0, 0.05)); }
+menu li:nth-child(3) a:hover { background: linear-gradient(360deg, rgb(244, 79, 167), deeppink, rgba(255, 20, 145, 0.05)); }     
+menu li:nth-child(4) a:hover { background: linear-gradient(360deg, rgb(184, 111, 202), mediumorchid, rgba(186, 85, 211, 0.05)); }
+menu li:nth-child(5) a:hover { background: linear-gradient(360deg, rgb(109, 255, 255), aqua, rgba(0, 255, 255, 0.05)); }
+menu li:nth-child(6) a:hover { background: linear-gradient(360deg, rgb(123, 255, 189), springgreen, rgba(0, 255, 128, 0.05)); }
+
+aside {
+    width: 27vw;
+    max-height: calc(100vh - 50px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #111;
+    background-image: url(../../images/carbon-fibre.png);
+}
+
+.profile {
+    height: 60%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+aside h2 {
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    font-weight: 100;
+    text-align: center;
+}
+
+.profile img {
+    max-height: 16vw;
+    margin-bottom: 0;
+    object-fit: cover;
+    object-position: center;
+}
+
+ul.badges {
+    height: 40px;
+    width: 16vw;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #151515;
+    border: 1px solid #222;
+}
+
+ul.badges li {
+    margin: 0 10px;
+    list-style: none;
+    font-size: 20px;
+    width: 20px;
+}
+
+ul.badges li i.yellow {
+    color: yellow;
+}
+
+ul.badges li i.blue {
+    color: aqua;
+}
+
+ul.badges li i.orange {
+    color: rgb(250, 155, 0);
+}
+
+ul.badges li i.purple {
+    color: mediumorchid;
+}
+
+
+h3, p {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    font-size: 20px;
+}
+
+h2, h3 {
+    color: #ddd;
+}
+
+p, li {
+    color: #777;
+}
+
+p.username {
+    font-weight: bold;
+    color: #ddd;
+}
+
+.recently-played {
+    height: 50%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-top: 1px solid #333;
+}
+
+.recently-played ul {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #999;
+    list-style: none;
+}
+
+.recently-played h2 {
+    margin-bottom: 20px;
+}
+
+aside img {
+    width: 16vw;
+    margin: 20px;
+    font-size: 20px;
+    border: 2px solid #333;
+}
+
+.recently-played ul li span {
+    width: calc(13.5vw - 26px);
+    display: inline-flex;
+    align-items: center;
+    font-size: 18px;
+    height: 40px;
+}
+
+.recently-played ul li  span:first-child {
+    justify-content: flex-end;
+    color: #aaa;
+    font-weight: bolder;
+}
+
+.right-aside {
+    padding-top: 20px;
+}
+
+ul.albumlist {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    list-style: none;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+li.album {
+    margin-top: 20px;
+    background-color: #151515;
+    border: 1px solid #222;
+}
+
+
+ul.albumlist li {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+ul.albumlist li span {
+    height: 40px;
+    font-size: 20px;
+    font-weight: lighter;
+    color: #777;
+}
+
+ul.albumlist li span.album__band {
+    color: #bbb;
+    font-weight: bold;
+}
+
+svg {
+    position: relative;
+}
+
+footer {
+    width: 100vw;
+    height: 50px;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    background: #111;
+    color: #333;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 20px;
+    border-top: 1px solid #333;
+}

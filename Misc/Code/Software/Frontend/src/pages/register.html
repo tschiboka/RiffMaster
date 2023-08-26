@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../../images/icon.png">
+    <script src="https://kit.fontawesome.com/d5efc64c80.js" crossorigin="anonymous"></script>
+    <script src="../../util/misc.js"></script>
+    <link rel="stylesheet" href="../style/register.css">
+    <script src="../script/register.js"></script>
+    <title>RiffMaster | Register</title>
+</head>
+<body onload="start()">
+    <h1>Riff Master - Register</h1>
+    <form>
+        <fieldset id="email-field">
+            <label for="email">Email</label>
+            <input id="email" type="text">
+        </fieldset>
+
+        <fieldset  id="fname-field">
+            <label for="fname">First Name</label>
+            <input id="fname" type="text">
+        </fieldset>
+
+        <fieldset  id="lname-field">
+            <label for="lname">Last Name</label>
+            <input id="lname" type="text">
+        </fieldset>
+
+        <fieldset  id="uname-field">
+            <label for="uname">User Name</label>
+            <input id="uname" type="text">
+        </fieldset>
+
+        <fieldset  id="password-field">
+            <label for="password">Password</label>
+            <input id="password" type="password">
+            <div class="reveal-password-wrapper">
+                <button id="reveal-password" type="button">
+                    <i id="eye-icon" class="fa-regular fa-eye"></i>
+                </button>
+            </div>
+        </fieldset>
+
+        <fieldset  id="confirm-field">
+            <label for="confirm">Confirm Password</label>
+            <input id="confirm" type="password">
+            <div class="reveal-password-wrapper">
+                <button id="reveal-confirm" type="button">
+                    <i id="eye-icon" class="fa-regular fa-eye"></i>
+                </button>
+            </div>
+        </fieldset>
+
+        <span id="message"></span>
+
+        <div class="button-box">
+            <button id="register" type="button">Create Profile</button>
+        </div>
+    </form>
+</body>
+</html>

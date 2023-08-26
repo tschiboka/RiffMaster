@@ -1,0 +1,8 @@
+{
+    "password": "RIFFMASTER_PASSWORD",
+    "jwtPrivateKey": "JWT_PRIVATE_KEY",
+    "db": "DB_STRING",
+    "emailAddress": "EMAIL_ADDRESS",
+    "emailServer": "EMAIL_SERVER",
+    "emailPassword": "EMAIL_PASSWORD"
+}

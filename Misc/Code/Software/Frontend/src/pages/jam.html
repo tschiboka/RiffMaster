@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../../images/favicon.png">
+    <link rel="stylesheet" href="../style/jam.css">
+    <script src="../../util/misc.js"></script>
+    <script src="../../util/controller.js"></script>
+    <title>RiffMaster | Jam</title>
+</head>
+<body onload="start()">
+    <div class="agree-music">
+        <div class="agree-music-box">
+            <h2>Warning!</h2>
+
+            <p>
+                Web browsers are not allowed to play audio elements automatically without user agreement. You can proceed by clicking Allow button.
+                <br>
+                <i>Please be aware of your surroundings as keyboard and controller events may trigger loud music, which can be a nuicance in a public environment.<i>
+            </p>
+
+            <button id="allow-music-btn">Allow Music</button>
+            </div>
+        </div>
+
+        <main>
+            <h1>Riff Master - Jam Session</h1>
+            <div id="guitar"></div>
+            <div id="equalizer"></div>
+        </main>
+    </div>
+
+    <footer>Crafted with &hearts; by Tivadar Debnar</footer>
+</body>
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js" integrity="sha512-6+YN/9o9BWrk6wSfGxQGpt3EUK6XeHi6yeHV+TYD2GR0Sj/cggRpXr1BrAQf0as6XslxomMUxXp2vIl+fv0QRA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="../script/jam.js"></script>
+    
+<!-- Add Controller Functionalities -->
+<script>
+    const body = document.getElementsByTagName("body")[0];
+    window.addEventListener("keydown", controllerListener);
+    window.addEventListener("keyup", controllerListener);
+</script>
+</html>

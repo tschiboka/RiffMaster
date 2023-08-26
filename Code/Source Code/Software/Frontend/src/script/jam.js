@@ -68,7 +68,8 @@ function handleStrumActivated(event, strum) {
 
 
 function handleFretActivated(event, fret, string) {
-    if (!fret) return;
+    if (fret === undefined || string === undefined) return;
+
     displayActionOnBoard(fret, string, -1, !event);
     
     if (event === 0) {                                                      // If Finger is Off Position 
@@ -85,8 +86,14 @@ function handleFretActivated(event, fret, string) {
 
 
 
-function playNote(note, string) { app.audio[note].play(); displayActionOnEqualizer(note, true, string); }
-function stopNote(note) { app.audio[note].stop(); displayActionOnEqualizer(note, false); }
+function playNote(note, string) { 
+    app.audio[note].play(); 
+    displayActionOnEqualizer(note, true, string); 
+}
+function stopNote(note) { 
+    app.audio[note].stop(); 
+    displayActionOnEqualizer(note, false); 
+}
 
 
 
